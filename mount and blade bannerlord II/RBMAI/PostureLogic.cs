@@ -990,7 +990,8 @@ namespace RBMAI
 			// Token: 0x0600021D RID: 541
 			public static float calculateHealthDamage(MissionWeapon targetWeapon, Agent attacker, Agent vicitm, float overPostureDamage, Blow b, Agent victimAgent)
 			{
-				float num = victimAgent.GetBaseArmorEffectivenessForBodyPart(BoneBodyPartType.Head);
+				return 0f;
+				/*float num = victimAgent.GetBaseArmorEffectivenessForBodyPart(BoneBodyPartType.Head);
 				num += victimAgent.GetBaseArmorEffectivenessForBodyPart(BoneBodyPartType.Neck);
 				num += victimAgent.GetBaseArmorEffectivenessForBodyPart(BoneBodyPartType.Chest);
 				num += victimAgent.GetBaseArmorEffectivenessForBodyPart(BoneBodyPartType.Abdomen);
@@ -1041,6 +1042,7 @@ namespace RBMAI
 					num9 = targetWeapon.GetModifiedThrustDamageForCurrentUsage();
 				}
 				return (float)MBMath.ClampInt(MathF.Ceiling(MissionGameModels.Current.StrikeMagnitudeModel.ComputeRawDamage(b.DamageType, (float)num9, num, 1f)), 0, 2000);
+			*/
 			}
 
 			// Token: 0x0600021E RID: 542
