@@ -97,6 +97,22 @@ namespace BattleStats
 				MenuSetup.sortedHeroRecords = values.ToList<HeroRecords>();
 				MenuSetup.sortedHeroRecords.Sort((HeroRecords x, HeroRecords y) => x.Dead.CompareTo(y.Dead));
 			}
+			
+			if (!BattleStatsBehavior.armyRecords.IsEmpty<KeyValuePair<string, ArmyRecords>>())
+			{
+				MenuSetup.sortedArmyRecords = new List<ArmyRecords>();
+				List<ArmyRecords> list = new List<ArmyRecords>();
+				Dictionary<string, ArmyRecords>.ValueCollection values2 = BattleStatsBehavior.armyRecords.Values;
+				list = values2.ToList<ArmyRecords>();
+				for (int i = 0; i < list.Count; i++)
+				{
+					if (!list.ElementAt(i).Name.Equals("Army Totals"))
+					{
+						MenuSetup.sortedArmyRecords.Add(list.ElementAt(i));
+					}
+				}
+				MenuSetup.sortedArmyRecords.Add(list.Find((ArmyRecords x) => x.Name.Equals("Army Totals")));
+			}
 		}
 
 		// Token: 0x0600000D RID: 13 RVA: 0x00002DD4 File Offset: 0x00000FD4
@@ -260,6 +276,8 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num2).Battles.ToString().PadRight(8),
 							"Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num2).Kills.ToString().PadRight(8),
 							// " PR: ",
@@ -268,12 +286,10 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(num2).KB.ToString().PadRight(8),
 							// " Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num2).Wounds.ToString().PadRight(8),
-							"  Injured: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num2).Wounds.ToString(),
-							"  Dead: ",
+							"Injured: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num2).Wounds.ToString().PadRight(8),
+							"Dead: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num2).Dead.ToString(),
-							"Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num2).Battles.ToString(),
 							"\n"
 						});
 						num2++;
@@ -293,6 +309,8 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num3).Battles.ToString().PadRight(8),
 							"Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num3).Kills.ToString().PadRight(8),
 							// "PR: ",
@@ -301,12 +319,10 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(num3).KB.ToString().PadRight(8),
 							// "Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num3).Wounds.ToString().PadRight(8),
-							"  Injured: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num3).Wounds.ToString(),
-							"  Dead: ",
+							"Injured: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num3).Wounds.ToString().PadRight(8),
+							"Dead: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num3).Dead.ToString(),
-							"Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num3).Battles.ToString(),
 							"\n"
 						});
 						num3++;
@@ -326,6 +342,8 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num4).Battles.ToString().PadRight(8),
 							"Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num4).Kills.ToString().PadRight(8),
 							// "PR: ",
@@ -334,12 +352,10 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(num4).KB.ToString().PadRight(8),
 							// "Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num4).Wounds.ToString().PadRight(8),
-							"  Injured: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num4).Wounds.ToString(),
-							"  Dead: ",
+							"Injured: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num4).Wounds.ToString().PadRight(8),
+							"Dead: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num4).Dead.ToString(),
-							"Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num4).Battles.ToString(),
 							"\n"
 						});
 						num4++;
@@ -359,7 +375,9 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
-							"Kills: ",
+							"B:",
+							MenuSetup.sortedHeroRecords.ElementAt(num5).Battles.ToString().PadRight(8),
+							"Kills:",
 							MenuSetup.sortedHeroRecords.ElementAt(num5).Kills.ToString().PadRight(8),
 							// "PR: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num5).PR.ToString().PadRight(8),
@@ -367,12 +385,10 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(num5).KB.ToString().PadRight(8),
 							// "Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num5).Wounds.ToString().PadRight(8),
-							"  Injured: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num5).Wounds.ToString(),
-							"  Dead: ",
+							"Injured:",
+							MenuSetup.sortedHeroRecords.ElementAt(num5).Wounds.ToString().PadRight(8),
+							"Dead:",
 							MenuSetup.sortedHeroRecords.ElementAt(num5).Dead.ToString(),
-							"Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num5).Battles.ToString(),
 							"\n"
 						});
 						num5++;
@@ -390,7 +406,9 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
-							"Kills: ",
+							"B:",
+							MenuSetup.sortedHeroRecords.ElementAt(i).Battles.ToString().PadRight(8),
+							"Kills:",
 							MenuSetup.sortedHeroRecords.ElementAt(i).Kills.ToString().PadRight(8),
 							// "PR: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(i).PR.ToString().PadRight(8),
@@ -398,12 +416,11 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(i).KB.ToString().PadRight(8),
 							// "Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(i).Wounds.ToString().PadRight(8),
-							"  Injured: ",
-							MenuSetup.sortedHeroRecords.ElementAt(i).Wounds.ToString(),
-							"  Dead: ",
+							"Injured:",
+							MenuSetup.sortedHeroRecords.ElementAt(i).Wounds.ToString().PadRight(8),
+							"Dead:",
 							MenuSetup.sortedHeroRecords.ElementAt(i).Dead.ToString(),
-							"Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(i).Battles.ToString(),
+
 							"\n"
 						});
 					}
@@ -424,7 +441,9 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
-							"Kills: ",
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num6).Battles.ToString(),
+							" Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num6).Kills.ToString(),
 							// " PR: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num6).PR.ToString(),
@@ -436,8 +455,6 @@ namespace BattleStats
 							MenuSetup.sortedHeroRecords.ElementAt(num6).Wounds.ToString(),
 							"  Dead: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num6).Dead.ToString(),
-							" Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num6).Battles.ToString(),
 							"\n"
 						});
 						num6++;
@@ -457,7 +474,9 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
-							"Kills: ",
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num7).Battles.ToString(),
+							" Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num7).Kills.ToString().PadRight(8),
 							// " PR: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num7).PR.ToString().PadRight(8),
@@ -465,12 +484,10 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(num7).KB.ToString().PadRight(8),
 							// " Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num7).Wounds.ToString().PadRight(8),
-							"  Injured: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num7).Wounds.ToString(),
-							"  Dead: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num7).Dead.ToString(),
-							" Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num7).Battles.ToString(),
+							" Injured: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num7).Wounds.ToString().PadRight(8),
+							" Dead: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num7).Dead.ToString().PadRight(8),
 							"\n"
 						});
 						num7++;
@@ -490,7 +507,9 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
-							"Kills: ",
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num8).Battles.ToString(),
+							" Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num8).Kills.ToString(),
 							// " PR: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num8).PR.ToString(),
@@ -498,12 +517,10 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(num8).KB.ToString(),
 							// " Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num8).Wounds.ToString(),
-							"  Injured: ",
+							" Injured: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num8).Wounds.ToString(),
-							"  Dead: ",
+							" Dead: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num8).Dead.ToString(),
-							" Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num8).Battles.ToString(),
 							"\n"
 						});
 						num8++;
@@ -523,7 +540,9 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
-							"Kills: ",
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(num9).Battles.ToString(),
+							" Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num9).Kills.ToString(),
 							// " PR: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num9).PR.ToString(),
@@ -531,12 +550,10 @@ namespace BattleStats
 							// MenuSetup.sortedHeroRecords.ElementAt(num9).KB.ToString(),
 							// " Wounds: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(num9).Wounds.ToString(),
-							"  Injured: ",
+							" Injured: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num9).Wounds.ToString(),
-							"  Dead: ",
+							" Dead: ",
 							MenuSetup.sortedHeroRecords.ElementAt(num9).Dead.ToString(),
-							" Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(num9).Battles.ToString(),
 							"\n"
 						});
 						num9++;
@@ -554,18 +571,18 @@ namespace BattleStats
 						text = string.Concat(new string[]
 						{
 							text,
-							"Kills: ",
+							"B: ",
+							MenuSetup.sortedHeroRecords.ElementAt(j).Battles.ToString(),
+							" Kills: ",
 							MenuSetup.sortedHeroRecords.ElementAt(j).Kills.ToString(),
 							// " PR: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(j).PR.ToString(),
 							// " K/B: ",
 							// MenuSetup.sortedHeroRecords.ElementAt(j).KB.ToString(),
-							"  Injured: ",
+							" Injured: ",
 							MenuSetup.sortedHeroRecords.ElementAt(j).Wounds.ToString(),
-							"  Dead: ",
+							" Dead: ",
 							MenuSetup.sortedHeroRecords.ElementAt(j).Dead.ToString(),
-							" Battles: ",
-							MenuSetup.sortedHeroRecords.ElementAt(j).Battles.ToString(),
 							"\n"
 						});
 					}
@@ -584,11 +601,13 @@ namespace BattleStats
 							text,
 							"[",
 							armyRecords.Name,
-							"]\nK: ",
+							"]\nB: ",
+							armyRecords.Battles.ToString(),
+							" K: ",
 							armyRecords.Kills.ToString(),
-							"  Injured: ",
+							" Injured: ",
 							armyRecords.Wounded.ToString(),
-							"  Dead: ",
+							" Dead: ",
 							armyRecords.Casualties.ToString(),
 							//"  PR: ",
 							//armyRecords.PR.ToString(),
@@ -598,8 +617,6 @@ namespace BattleStats
 							// armyRecords.WB.ToString(),
 							//"  C/B: ",
 							//armyRecords.CB.ToString(),
-							"  B: ",
-							armyRecords.Battles.ToString(),
 							"\n"
 						});
 					}
@@ -610,11 +627,13 @@ namespace BattleStats
 							text,
 							"[",
 							armyRecords.Name,
-							"]\nK: ",
+							"]\nB: ",
+							armyRecords.Battles.ToString(),
+							" Kills: ",
 							armyRecords.Kills.ToString(),
-							"  Injured: ",
+							" Injured: ",
 							armyRecords.Wounded.ToString(),
-							"  Dead: ",
+							" Dead: ",
 							armyRecords.Casualties.ToString(),
 							// "  PR: ",
 							// armyRecords.PR.ToString(),
@@ -626,8 +645,6 @@ namespace BattleStats
 							// armyRecords.CB.ToString(),
 							// "  FK: ",
 							// armyRecords.FK.ToString(),
-							"  B: ",
-							armyRecords.Battles.ToString(),
 							"\n"
 						});
 					}
