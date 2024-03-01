@@ -22,5 +22,7 @@ namespace BattleStats
 
 		// Token: 0x0400000A RID: 10
 		public int Battles;
+		
+		public int Dead;
 	}
 }

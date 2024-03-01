@@ -152,6 +152,7 @@ namespace BattleStats
 					PR = spscoreboardUnitVM.Score.Kill,
 					KB = (double)spscoreboardUnitVM.Score.Kill,
 					Wounds = spscoreboardUnitVM.Score.Wounded,
+					Dead = spscoreboardUnitVM.Score.Dead,
 					Battles = 1
 				};
 				if (!BattleStatsBehavior.heroRecords.IsEmpty<KeyValuePair<string, HeroRecords>>())
