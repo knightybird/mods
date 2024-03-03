@@ -27,4 +27,15 @@ Realistic Battle Mod v3.8.0 by Marnah93 and Philozoraptor
 https://www.nexusmods.com/mountandblade2bannerlord/mods/791
 
 The damage taken from a posture break makes duels without a shield very hard and unfair. 
-- remove hp loss from a posture break 'calculateHealthDamage' = 0;
+RBMAI.Posture
+ - increased maxPosture 100f to 300f, regenPerTick 0.01f to 0.05f.
+ - remove hp loss from a posture break 'calculateHealthDamage' = 0;
+RBMConfig.Utilities
+ - lowerArmorQuality() - defaultProbabilty from 0.05f to 0.5f
+ (note, refernce rbmconfig like: RBM.Config.RBM.Config.[function])
+RBMCombat.DamageRework
+ - Javelin damage to shields - 25f to 20f
+ - Arrow damage to shields 1.5f to 2f
+ - bolt damage to shields 1.5 to 2.25f
+
+Bodyguards by carbon198
