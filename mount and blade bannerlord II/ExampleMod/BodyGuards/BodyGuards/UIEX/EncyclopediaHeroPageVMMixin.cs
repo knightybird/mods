@@ -20,18 +20,20 @@ namespace Bodyguards.UIEX
 			this._vm = vm;
 			this._vm.RefreshValues();
 			this.OnRefresh();
-		}
+        }
 
-		// Token: 0x06000058 RID: 88 RVA: 0x000036A9 File Offset: 0x000018A9
-		public override void OnRefresh()
+        // Token: 0x06000058 RID: 88 RVA: 0x000036A9 File Offset: 0x000018A9
+        public override void OnRefresh()
 		{
 			base.OnPropertyChanged("CanBeBodyguard");
 			base.OnPropertyChanged("ToggleBodyguardActionName");
 			base.OnPropertyChanged("ToggleBodyguardHint");
-		}
+            base.OnPropertyChanged("ToggleBodyguardActionName2");
+            base.OnPropertyChanged("ToggleBodyguardHint2");
+        }
 
-		// Token: 0x06000059 RID: 89 RVA: 0x000036D0 File Offset: 0x000018D0
-		[DataSourceMethod]
+        // Token: 0x06000059 RID: 89 RVA: 0x000036D0 File Offset: 0x000018D0
+        [DataSourceMethod]
 		public void ToggleBodyguard()
 		{
 			bool flag = this._behavior == null;
@@ -50,9 +52,28 @@ namespace Bodyguards.UIEX
 			}
 		}
 
-		// Token: 0x17000021 RID: 33
-		// (get) Token: 0x0600005A RID: 90 RVA: 0x00003734 File Offset: 0x00001934
-		[DataSourceProperty]
+        [DataSourceMethod]
+        public void ToggleBodyguard2()
+        {
+            bool flag = this._behavior == null;
+            if (!flag)
+            {
+                bool flag2 = this._behavior.IsBodyguard2(this._hero);
+                if (flag2)
+                {
+                    this._behavior.RemoveBodyguard2(this._hero);
+                }
+                else
+                {
+                    this._behavior.AddBodyguard2(this._hero);
+                }
+                this.OnRefresh();
+            }
+        }
+
+        // Token: 0x17000021 RID: 33
+        // (get) Token: 0x0600005A RID: 90 RVA: 0x00003734 File Offset: 0x00001934
+        [DataSourceProperty]
 		public bool CanBeBodyguard
 		{
 			get
@@ -61,9 +82,9 @@ namespace Bodyguards.UIEX
 			}
 		}
 
-		// Token: 0x17000022 RID: 34
-		// (get) Token: 0x0600005B RID: 91 RVA: 0x00003795 File Offset: 0x00001995
-		[DataSourceProperty]
+        // Token: 0x17000022 RID: 34
+        // (get) Token: 0x0600005B RID: 91 RVA: 0x00003795 File Offset: 0x00001995
+        [DataSourceProperty]
 		public string ToggleBodyguardActionName
 		{
 			get
@@ -72,9 +93,18 @@ namespace Bodyguards.UIEX
 			}
 		}
 
-		// Token: 0x17000023 RID: 35
-		// (get) Token: 0x0600005C RID: 92 RVA: 0x000037CC File Offset: 0x000019CC
-		[DataSourceProperty]
+        [DataSourceProperty]
+        public string ToggleBodyguardActionName2
+        {
+            get
+            {
+                return this._behavior.IsBodyguard2(this._hero) ? new TextObject("Remove from Bodyguards2", null).ToString() : new TextObject("Add to Bodyguards2", null).ToString();
+            }
+        }
+
+        // Token: 0x17000023 RID: 35
+        // (get) Token: 0x0600005C RID: 92 RVA: 0x000037CC File Offset: 0x000019CC
+        [DataSourceProperty]
 		public HintViewModel ToggleBodyguardHint
 		{
 			get
@@ -83,8 +113,17 @@ namespace Bodyguards.UIEX
 			}
 		}
 
-		// Token: 0x04000017 RID: 23
-		private EncyclopediaHeroPageVM _vm;
+        [DataSourceProperty]
+        public HintViewModel ToggleBodyguardHint2
+        {
+            get
+            {
+                return new HintViewModel(this._hintText.SetTextVariable("ADDING", this._behavior.IsBodyguard2(this._hero) ? 0 : 1).SetTextVariable("HERONAME", this._hero.Name.ToString()), null);
+            }
+        }
+
+        // Token: 0x04000017 RID: 23
+        private EncyclopediaHeroPageVM _vm;
 
 		// Token: 0x04000018 RID: 24
 		private readonly Hero _hero;
