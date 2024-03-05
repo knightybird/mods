@@ -59,7 +59,7 @@ namespace Bodyguards
 		// Token: 0x17000014 RID: 20
 		// (get) Token: 0x06000017 RID: 23 RVA: 0x00002224 File Offset: 0x00000424
 		// (set) Token: 0x06000018 RID: 24 RVA: 0x0000222C File Offset: 0x0000042C
-		[SettingPropertyFloatingInteger("{=BGV58IAHzbY}Percentage of troops to be guards", 0f, 0.25f, "#0%", Order = 1, RequireRestart = false, HintText = "{=BGe87VFzNgy}Max bodyguards will be the smaller of this and the preceeding value")]
+		[SettingPropertyFloatingInteger("{=BGV58IAHzbY}Percentage of troops to be guards", 0f, 1.00f, "#0%", Order = 1, RequireRestart = false, HintText = "{=BGe87VFzNgy}Max bodyguards will be the smaller of this and the preceeding value")]
 		[SettingPropertyGroup("{=BGXGxv4zzDs}General Settings", GroupOrder = 0)]
 		public float maxBodyguardsPercent { get; set; } = 0.05f;
 
