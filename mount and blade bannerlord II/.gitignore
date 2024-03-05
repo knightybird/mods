@@ -1,0 +1,16 @@
+!/ExampleMod
+.idea
+.vs
+
+*/obj
+*/Properties
+
+
+/RBMConfig
+/RBMCombat
+/RBMAI
+
+RBMConfig.sln
+RBMCombat.sln
+RBMAI.sln
+!mount and blade bannerlord II/RBMAI/PostureLogic.cs
