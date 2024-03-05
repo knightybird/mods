@@ -26,8 +26,9 @@ namespace Bodyguards.UIEX
         public override void OnRefresh()
 		{
 			base.OnPropertyChanged("CanBeBodyguard");
-			base.OnPropertyChanged("ToggleBodyguardActionName");
+            base.OnPropertyChanged("ToggleBodyguardActionName");
 			base.OnPropertyChanged("ToggleBodyguardHint");
+            base.OnPropertyChanged("CanBeBodyguard2");
             base.OnPropertyChanged("ToggleBodyguardActionName2");
             base.OnPropertyChanged("ToggleBodyguardHint2");
         }
@@ -81,6 +82,15 @@ namespace Bodyguards.UIEX
 				return this._settings.companionGuardMode && !this._hero.Equals(Hero.MainHero) && Clan.PlayerClan.Heroes.Contains(this._hero) && this._hero.IsAlive && !this._hero.IsChild;
 			}
 		}
+
+        [DataSourceProperty]
+        public bool CanBeBodyguard2
+        {
+            get
+            {
+                return this._settings.companionGuardMode && !this._hero.Equals(Hero.MainHero) && Clan.PlayerClan.Heroes.Contains(this._hero) && this._hero.IsAlive && !this._hero.IsChild;
+            }
+        }
 
         // Token: 0x17000022 RID: 34
         // (get) Token: 0x0600005B RID: 91 RVA: 0x00003795 File Offset: 0x00001995
