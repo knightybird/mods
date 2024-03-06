@@ -775,12 +775,13 @@ namespace Bodyguards
 			bool flag = base.Mission == null;
 			if (!flag)
 			{
-				bool flag2 = base.Mission.MainAgent == null && (this.GetBodyguardCount() > 0 && this.GetBodyguardCount2() > 0);
+/*				bool flag2 = base.Mission.MainAgent == null && (this.GetBodyguardCount() > 0 && this.GetBodyguardCount2() > 0);
                 if (flag2)
 				{
 					this.ReleaseBodyguards(null);
 					this.ReleaseBodyguards2(null);
                 }
+*/
                 bool flag3ForKeyF1 = missionScreen.InputManager.IsControlDown() && missionScreen.InputManager.IsKeyPressed(key);
                 bool flag3ForKeyF2 = missionScreen.InputManager.IsControlDown() && missionScreen.InputManager.IsKeyPressed(key2);
 
