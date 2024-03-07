@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1657C100-ADF9-4BC9-975C-62BCAC8B67B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SmallSquadVanguard</RootNamespace>
+    <AssemblyName>SmallSquadVanguard</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\Modules\RBM\bin\Win64_Shipping_Client\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="SandBox">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
+    </Reference>
+    <Reference Include="SandBox.GauntletUI">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.GauntletUI.dll</HintPath>
+    </Reference>
+    <Reference Include="StoryMode" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TaleWorlds.CampaignSystem">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.CampaignSystem.ViewModelCollection">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.ViewModelCollection.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.Core">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.Core.ViewModelCollection">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Core.ViewModelCollection.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.Engine.GauntletUI">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Engine.GauntletUI.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.GauntletUI">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.GauntletUI.Data">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.Library">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.LinQuick">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.LinQuick.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.Localization">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Localization.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.MountAndBlade">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.ObjectSystem">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ObjectSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.SaveSystem">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.SaveSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.ScreenSystem">
+      <HintPath>..\..\..\..\..\Nick\Entertainment\Mount &amp; Blade 2 - Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ScreenSystem.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="common\BLHelper.cs" />
+    <Compile Include="leveling\ChoosePerks.cs" />
+    <Compile Include="leveling\XP.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SSC\BanditsModel.cs" />
+    <Compile Include="SSC\conv\Conversation.cs" />
+    <Compile Include="SSC\conv\ScoutConv.cs" />
+    <Compile Include="SSC\DebugBehavior.cs" />
+    <Compile Include="SSC\debug\TeleportationCampaignBehaviorMod.cs" />
+    <Compile Include="SSC\escort\TroopReader.cs" />
+    <Compile Include="SSC\FieldProxy.cs" />
+    <Compile Include="SSC\FileConfigSettings.cs" />
+    <Compile Include="SSC\Manage.cs" />
+    <Compile Include="SSC\misc\BaseManager.cs" />
+    <Compile Include="SSC\misc\BitFlags.cs" />
+    <Compile Include="SSC\misc\ExtensionMethods\MyExtensions.cs" />
+    <Compile Include="SSC\misc\Flags.cs" />
+    <Compile Include="SSC\misc\HexEditor.cs" />
+    <Compile Include="SSC\misc\Message.cs" />
+    <Compile Include="SSC\misc\PartyMisc.cs" />
+    <Compile Include="SSC\misc\SBPEditor.cs" />
+    <Compile Include="SSC\misc\StaticBodyManager.cs" />
+    <Compile Include="SSC\PartyEvents.cs" />
+    <Compile Include="SSC\PartyInitialization.cs" />
+    <Compile Include="SSC\party\ActionQueue.cs" />
+    <Compile Include="SSC\party\ActionQueueBehavior.cs" />
+    <Compile Include="SSC\party\BattleMission.cs" />
+    <Compile Include="SSC\party\BodyKeys.cs" />
+    <Compile Include="SSC\party\CharacterStatsModel.cs" />
+    <Compile Include="SSC\party\Companion.cs" />
+    <Compile Include="SSC\party\companions\CompanionRolesCampaignBehaviorMod.cs" />
+    <Compile Include="SSC\party\companions\DisableCompanionRolesCampaignBehavior.cs" />
+    <Compile Include="SSC\party\companions\HeroData.cs" />
+    <Compile Include="SSC\party\companions\HeroFlags.cs" />
+    <Compile Include="SSC\party\companions\HiredCompanion.cs" />
+    <Compile Include="SSC\party\companions\Teleportation.cs" />
+    <Compile Include="SSC\party\EquipmentDistribution.cs" />
+    <Compile Include="SSC\party\EquipmentManager.cs" />
+    <Compile Include="SSC\party\equipment\ArmorDistributor.cs" />
+    <Compile Include="SSC\party\equipment\DistributionOutcome.cs" />
+    <Compile Include="SSC\party\equipment\Distributor.cs" />
+    <Compile Include="SSC\party\equipment\Equip.cs" />
+    <Compile Include="SSC\party\equipment\HorseDistributor.cs" />
+    <Compile Include="SSC\party\equipment\LockLayer.cs" />
+    <Compile Include="SSC\party\equipment\LockToggleButton.cs" />
+    <Compile Include="SSC\party\equipment\LockTogglesVM.cs" />
+    <Compile Include="SSC\party\equipment\MissileDistributor.cs" />
+    <Compile Include="SSC\party\equipment\Outcome.cs" />
+    <Compile Include="SSC\party\equipment\ReturnedEquipment.cs" />
+    <Compile Include="SSC\party\equipment\SimpleDistributor.cs" />
+    <Compile Include="SSC\party\equipment\WeaponDistributor.cs" />
+    <Compile Include="SSC\party\Healing.cs" />
+    <Compile Include="SSC\party\IntroductionStoryMode.cs" />
+    <Compile Include="SSC\party\PartyRole.cs" />
+    <Compile Include="SSC\party\PartyRoles.cs" />
+    <Compile Include="SSC\party\PlayerDefinedCompanion.cs" />
+    <Compile Include="SSC\party\PlayerParty.cs" />
+    <Compile Include="SSC\party\QueuedAction.cs" />
+    <Compile Include="SSC\party\roles\EngineerRole.cs" />
+    <Compile Include="SSC\party\roles\QuartermasterRole.cs" />
+    <Compile Include="SSC\party\roles\SurgeonRole.cs" />
+    <Compile Include="SSC\party\ScoutRole.cs" />
+    <Compile Include="SSC\party\story\TutorialFinalizer.cs" />
+    <Compile Include="SSC\party\VanguardDelayedTeleportationModel.cs" />
+    <Compile Include="SSC\party\VanguardPartyImpairmentModel.cs" />
+    <Compile Include="SSC\party\VanguardPartyWageModel.cs" />
+    <Compile Include="SSC\patch\BreakInBesiegedSettlement.cs" />
+    <Compile Include="SSC\patch\BuyHorsesPatch.cs" />
+    <Compile Include="SSC\patch\DaytimeHideouts.cs" />
+    <Compile Include="SSC\patch\EndCaptivityActionPatch.cs" />
+    <Compile Include="SSC\patch\EscapePatch.cs" />
+    <Compile Include="SSC\patch\HarmonyBehavior.cs" />
+    <Compile Include="SSC\patch\HarmonyLibrary.cs" />
+    <Compile Include="SSC\patch\HideoutTroops.cs" />
+    <Compile Include="SSC\patch\MainCompanion.cs" />
+    <Compile Include="SSC\patch\PartyBase_PartySizeLimit.cs" />
+    <Compile Include="SSC\patch\Patch.cs" />
+    <Compile Include="SSC\patch\VanguardTrainingFieldCampaignBehavior.cs" />
+    <Compile Include="SSC\scout\HorseBuying.cs" />
+    <Compile Include="SSC\scout\ScoutMissionConversation.cs" />
+    <Compile Include="SSC\settings\MCMChecker.cs" />
+    <Compile Include="SSC\settings\MCM_Manager.cs" />
+    <Compile Include="SSC\settings\ModSettings.cs" />
+    <Compile Include="SSC\SSC_SubModule.cs" />
+    <Compile Include="SSC\story\StoryBehavior.cs" />
+    <Compile Include="SSC\story\StoryModePatches.cs" />
+    <Compile Include="SSC\World.cs" />
+    <Compile Include="SSC\world\bandits\StartHideoutBattlePatch.cs" />
+    <Compile Include="SSC\world\castle_party\CastleParty.cs" />
+    <Compile Include="SSC\world\castle_party\CastlePartyBehavior.cs" />
+    <Compile Include="SSC\world\castle_party\CastlePartyHelper.cs" />
+    <Compile Include="SSC\world\chase\ChasingPartyComponent.cs" />
+    <Compile Include="SSC\world\escort\BanditCultures.cs" />
+    <Compile Include="SSC\world\escort\BanditFormation.cs" />
+    <Compile Include="SSC\world\escort\BanditPartyManager.cs" />
+    <Compile Include="SSC\world\escort\BanditTypes.cs" />
+    <Compile Include="SSC\world\escort\Distance.cs" />
+    <Compile Include="SSC\world\escort\DistanceManager.cs" />
+    <Compile Include="SSC\world\escort\EscortBattlesPerformance.cs" />
+    <Compile Include="SSC\world\escort\EscortBehavior.cs" />
+    <Compile Include="SSC\world\escort\EscortData.cs" />
+    <Compile Include="SSC\world\escort\EscortEvents.cs" />
+    <Compile Include="SSC\world\escort\EscortHelper.cs" />
+    <Compile Include="SSC\world\escort\EscortMenus.cs" />
+    <Compile Include="SSC\world\escort\SettlementDistanceComparer.cs" />
+    <Compile Include="SSC\world\escort\SettlementToPartyDistanceComparer.cs" />
+    <Compile Include="SSC\world\escort\Troop.cs" />
+    <Compile Include="SSC\world\escort\TroopType.cs" />
+    <Compile Include="SSC\world\HideoutGrowthBehavior.cs" />
+    <Compile Include="SSC\world\scout\Abandonment.cs" />
+    <Compile Include="SSC\world\scout\Command.cs" />
+    <Compile Include="SSC\world\scout\FollowerParty.cs" />
+    <Compile Include="SSC\world\scout\PartyStatus.cs" />
+    <Compile Include="SSC\world\scout\ResponseType.cs" />
+    <Compile Include="SSC\world\scout\ScoutBehavior.cs" />
+    <Compile Include="SSC\world\scout\ScoutDialogs.cs" />
+    <Compile Include="SSC\world\scout\ScoutEvents.cs" />
+    <Compile Include="SSC\world\scout\ScoutMission.cs" />
+    <Compile Include="SSC\world\scout\ScoutRewards.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
