@@ -94,16 +94,22 @@ namespace BattleStats
 			if (!BattleStatsBehavior.heroRecords.IsEmpty<KeyValuePair<string, HeroRecords>>())
 			{
 				Dictionary<string, HeroRecords>.ValueCollection values = BattleStatsBehavior.heroRecords.Values;
-				MenuSetup.sortedHeroRecords = values.ToList<HeroRecords>();
 				MenuSetup.sortedHeroRecords.Sort((HeroRecords x, HeroRecords y) => x.Dead.CompareTo(y.Dead));
+				MenuSetup.sortedHeroRecords = values
+					.OrderBy(h => !Char.IsLetter(h.Name[0]))
+					.ToList<HeroRecords>();
 			}
 			
 			if (!BattleStatsBehavior.armyRecords.IsEmpty<KeyValuePair<string, ArmyRecords>>())
 			{
+				List<string> formationOrder = new List<string>() { "Infantry", "Ranged", "Cavalry", "Horse Archers" };
+
 				MenuSetup.sortedArmyRecords = new List<ArmyRecords>();
 				List<ArmyRecords> list = new List<ArmyRecords>();
 				Dictionary<string, ArmyRecords>.ValueCollection values2 = BattleStatsBehavior.armyRecords.Values;
-				list = values2.ToList<ArmyRecords>();
+				list = values2
+					.OrderBy((x) => formationOrder.IndexOf(x.Name))
+					.ToList<ArmyRecords>();
 				for (int i = 0; i < list.Count; i++)
 				{
 					if (!list.ElementAt(i).Name.Equals("Army Totals"))
