@@ -30,7 +30,14 @@ namespace Bodyguards.UIEX
 			base.OnPropertyChanged("ToggleBodyguardHint");
             base.OnPropertyChanged("CanBeBodyguard2");
             base.OnPropertyChanged("ToggleBodyguardActionName2");
+
             base.OnPropertyChanged("ToggleBodyguardHint2");
+            base.OnPropertyChanged("ToggleBodyguardActionName3");
+            base.OnPropertyChanged("ToggleBodyguardActionName4"); 
+            base.OnPropertyChanged("ToggleBodyguardActionName5");
+
+            base.OnPropertyChanged("CanBeCaptain");
+            base.OnPropertyChanged("ToggleCaptainActionName");
         }
 
         // Token: 0x06000059 RID: 89 RVA: 0x000036D0 File Offset: 0x000018D0
@@ -72,6 +79,84 @@ namespace Bodyguards.UIEX
             }
         }
 
+
+
+        [DataSourceMethod]
+        public void ToggleBodyguard3()
+        {
+            bool flag = this._behavior == null;
+            if (!flag)
+            {
+                bool flag2 = this._behavior.IsBodyguard3(this._hero);
+                if (flag2)
+                {
+                    this._behavior.RemoveBodyguard3(this._hero);
+                }
+                else
+                {
+                    this._behavior.AddBodyguard3(this._hero);
+                }
+                this.OnRefresh();
+            }
+        }
+
+        [DataSourceMethod]
+        public void ToggleBodyguard4()
+        {
+            bool flag = this._behavior == null;
+            if (!flag)
+            {
+                bool flag2 = this._behavior.IsBodyguard4(this._hero);
+                if (flag2)
+                {
+                    this._behavior.RemoveBodyguard4(this._hero);
+                }
+                else
+                {
+                    this._behavior.AddBodyguard4(this._hero);
+                }
+                this.OnRefresh();
+            }
+        }
+
+        [DataSourceMethod]
+        public void ToggleBodyguard5()
+        {
+            bool flag = this._behavior == null;
+            if (!flag)
+            {
+                bool flag2 = this._behavior.IsBodyguard5(this._hero);
+                if (flag2)
+                {
+                    this._behavior.RemoveBodyguard5(this._hero);
+                }
+                else
+                {
+                    this._behavior.AddBodyguard5(this._hero);
+                }
+                this.OnRefresh();
+            }
+        }
+
+        [DataSourceMethod]
+        public void ToggleCaptain()
+        {
+            bool flag = this._behavior == null;
+            if (!flag)
+            {
+                bool flag2 = this._behavior.IsCaptain(this._hero);
+                if (flag2)
+                {
+                    this._behavior.RemoveCaptain(this._hero);
+                }
+                else
+                {
+                    this._behavior.AddCaptain(this._hero);
+                }
+                this.OnRefresh();
+            }
+        }
+
         // Token: 0x17000021 RID: 33
         // (get) Token: 0x0600005A RID: 90 RVA: 0x00003734 File Offset: 0x00001934
         [DataSourceProperty]
@@ -85,6 +170,15 @@ namespace Bodyguards.UIEX
 
         [DataSourceProperty]
         public bool CanBeBodyguard2
+        {
+            get
+            {
+                return this._settings.companionGuardMode && !this._hero.Equals(Hero.MainHero) && Clan.PlayerClan.Heroes.Contains(this._hero) && this._hero.IsAlive && !this._hero.IsChild;
+            }
+        }
+
+        [DataSourceProperty]
+        public bool CanBeCaptain
         {
             get
             {
@@ -109,6 +203,42 @@ namespace Bodyguards.UIEX
             get
             {
                 return this._behavior.IsBodyguard2(this._hero) ? new TextObject("Remove from Bodyguards2", null).ToString() : new TextObject("Add to Bodyguards2", null).ToString();
+            }
+        }
+
+        [DataSourceProperty]
+        public string ToggleBodyguardActionName3
+        {
+            get
+            {
+                return this._behavior.IsBodyguard3(this._hero) ? new TextObject("Remove from AIBodygrds1", null).ToString() : new TextObject("Add to AIBodygrds1", null).ToString();
+            }
+        }
+
+        [DataSourceProperty]
+        public string ToggleBodyguardActionName4
+        {
+            get
+            {
+                return this._behavior.IsBodyguard4(this._hero) ? new TextObject("Remove from AIBodygrds2", null).ToString() : new TextObject("Add to AIBodygrds2", null).ToString();
+            }
+        }
+
+        [DataSourceProperty]
+        public string ToggleBodyguardActionName5
+        {
+            get
+            {
+                return this._behavior.IsBodyguard5(this._hero) ? new TextObject("Remove from AIBodygrds3", null).ToString() : new TextObject("Add to AIBodygrds3", null).ToString();
+            }
+        }
+
+        [DataSourceProperty]
+        public string ToggleCaptainActionName
+        {
+            get
+            {
+                return this._behavior.IsCaptain(this._hero) ? new TextObject("Remove Captain", null).ToString() : new TextObject("Add Captain", null).ToString();
             }
         }
 

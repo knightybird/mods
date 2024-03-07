@@ -223,6 +223,299 @@ namespace Bodyguards
             }
         }
 
+        private void CreatePlayerBodyguards3()
+        {
+            Team playerTeam = this.GetPlayerTeam();
+            bool flag = playerTeam == null || playerTeam.TeamAgents == null || base.Mission == null || base.Mission.CombatType != Mission.MissionCombatType.Combat;
+            if (!flag)
+            {
+
+                bool flag2 = base.Mission.IsSiegeBattle && !this._settings.enableBodyguardsDuringSieges;
+                if (!flag2)
+                {
+                    bool flag3 = !playerTeam.IsPlayerGeneral;
+                    if (!flag3)
+                    {
+                        IEnumerable<Agent> enumerable = this.FilterAgents(playerTeam.TeamAgents.ToList<Agent>().AsEnumerable<Agent>());
+                        int num = MathF.Min((int)((float)enumerable.Count<Agent>() * this._settings.maxBodyguardsPercent), this._settings.maxBodyguards);
+                        FormationClass desiredTroopFormationClass = this._settings.getDesiredTroopFormationClass();
+                        IEnumerable<Agent> enumerable2 = this.SelectTroops3(enumerable, desiredTroopFormationClass);
+                        IEnumerable<Agent> enumerable3 = this.SelectCaptain(enumerable);
+
+
+                        bool flag4 = enumerable3.Count<Agent>() > 0;
+
+                        if (flag4)
+                        {
+                            Agent chosenAgent = enumerable3.First();
+
+                            bool flag5 = enumerable2.Count<Agent>() < num && (!this._settings.companionGuardMode || !this._settings.doNotBackfill);
+                            if (flag5)
+                            {
+                                IEnumerable<Agent> source = from a in enumerable.Except(enumerable2)
+                                                            orderby (chosenAgent.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
+                                                            select a;
+                                enumerable2 = enumerable2.Concat(source.Take(num - enumerable2.Count<Agent>())).ToList<Agent>();
+                            }
+                            int num2 = MathF.Min(enumerable2.Count<Agent>(), num);
+                            bool flag6 = this._bodyguardFormation3 != null;
+                            if (flag6)
+                            {
+                            }
+                            bool flag7 = false;
+                            bool flag8 = num2 > 0;
+                            if (flag8)
+                            {
+                                this._bodyguardFormation3 = playerTeam.GetFormation(FormationClass.Bodyguard);
+                                if (chosenAgent.MountAgent == null || !chosenAgent.HasMount)
+                                    this._bodyguardFormation3.RidingOrder = RidingOrder.RidingOrderDismount;
+                                this._bodyguardFormation3.SetMovementOrder(MovementOrder.MovementOrderMove(chosenAgent.GetWorldPosition()));
+                                this._bodyguardFormation3.SetControlledByAI(true, false);
+
+
+
+                                bool companionGuardMode = this._settings.companionGuardMode;
+                                List<Agent> list2;
+                                if (companionGuardMode)
+                                {
+                                    list2 = enumerable2.OrderByDescending(delegate (Agent a)
+                                    {
+                                        BasicCharacterObject character = a.Character;
+                                        return (character != null) ? new bool?(character.IsHero) : null;
+                                    }).ThenByDescending((Agent a) => this.CheckSpecificTroopName(a)).ThenByDescending((Agent a) => a.CharacterPowerCached).ThenByDescending((Agent a) => a.Character.MaxHitPoints()).Take(num2).ToList<Agent>();
+                                }
+                                else
+                                {
+                                    list2 = (from a in enumerable2
+                                             orderby this.CheckSpecificTroopName(a) descending, a.CharacterPowerCached descending
+                                             select a).Take(num2).ToList<Agent>();
+                                }
+                                bool flag9 = flag7;
+                                if (flag9)
+                                {
+                                    list2.Add(this._bodyguardFormation3.Captain);
+                                }
+                                this.TransferUnits(list2, this._bodyguardFormation3, false);
+                                TacticComponent.SetDefaultBehaviorWeights(this._bodyguardFormation3);
+                                BehaviorProtectVIPAgent behavior = this._bodyguardFormation3.AI.GetBehavior<BehaviorProtectVIPAgent>();
+                                bool flag10 = behavior == null;
+                                if (flag10)
+                                {
+                                    this._bodyguardFormation3.AI.AddAiBehavior(new BehaviorProtectVIPAgent(this._bodyguardFormation5));
+                                    behavior = this._bodyguardFormation3.AI.GetBehavior<BehaviorProtectVIPAgent>();
+                                }
+                                behavior.ResetBehavior();
+                                behavior.VIP = chosenAgent;
+
+                                this._bodyguardFormation3.AI.SetBehaviorWeight<BehaviorProtectVIPAgent>(100f);
+                                bool flag11 = this._bodyguardFormation3.QuerySystem.MainClass == FormationClass.Bodyguard;
+                                if (flag11)
+                                {
+                                    playerTeam.BodyGuardFormation = this._bodyguardFormation3;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CreatePlayerBodyguards4()
+        {
+            Team playerTeam = this.GetPlayerTeam();
+            bool flag = playerTeam == null || playerTeam.TeamAgents == null || base.Mission == null || base.Mission.CombatType != Mission.MissionCombatType.Combat;
+            if (!flag)
+            {
+
+                bool flag2 = base.Mission.IsSiegeBattle && !this._settings.enableBodyguardsDuringSieges;
+                if (!flag2)
+                {
+                    bool flag3 = !playerTeam.IsPlayerGeneral;
+                    if (!flag3)
+                    {
+                        IEnumerable<Agent> enumerable = this.FilterAgents(playerTeam.TeamAgents.ToList<Agent>().AsEnumerable<Agent>());
+                        int num = MathF.Min((int)((float)enumerable.Count<Agent>() * this._settings.maxBodyguardsPercent), this._settings.maxBodyguards);
+                        FormationClass desiredTroopFormationClass = this._settings.getDesiredTroopFormationClass();
+                        IEnumerable<Agent> enumerable2 = this.SelectTroops4(enumerable, desiredTroopFormationClass);
+                        IEnumerable<Agent> enumerable3 = this.SelectCaptain(enumerable);
+
+
+                        bool flag4 = enumerable3.Count<Agent>() > 1;
+
+                        if (flag4)
+                        {
+                            List<Agent> agentList = enumerable3.ToList();
+                            Agent chosenAgent = agentList[1];
+
+                            bool flag5 = enumerable2.Count<Agent>() < num && (!this._settings.companionGuardMode || !this._settings.doNotBackfill);
+                            if (flag5)
+                            {
+                                IEnumerable<Agent> source = from a in enumerable.Except(enumerable2)
+                                                            orderby (chosenAgent.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
+                                                            select a;
+                                enumerable2 = enumerable2.Concat(source.Take(num - enumerable2.Count<Agent>())).ToList<Agent>();
+                            }
+                            int num2 = MathF.Min(enumerable2.Count<Agent>(), num);
+                            bool flag6 = this._bodyguardFormation4 != null;
+                            if (flag6)
+                            {
+                            }
+                            bool flag7 = false;
+                            bool flag8 = num2 > 0;
+                            if (flag8)
+                            {
+                                this._bodyguardFormation4 = playerTeam.GetFormation(FormationClass.Bodyguard);
+                                if (chosenAgent.MountAgent == null || !chosenAgent.HasMount)
+                                    this._bodyguardFormation4.RidingOrder = RidingOrder.RidingOrderDismount;
+                                this._bodyguardFormation4.SetMovementOrder(MovementOrder.MovementOrderMove(chosenAgent.GetWorldPosition()));
+                                this._bodyguardFormation4.SetControlledByAI(true, false);
+
+
+
+                                bool companionGuardMode = this._settings.companionGuardMode;
+                                List<Agent> list2;
+                                if (companionGuardMode)
+                                {
+                                    list2 = enumerable2.OrderByDescending(delegate (Agent a)
+                                    {
+                                        BasicCharacterObject character = a.Character;
+                                        return (character != null) ? new bool?(character.IsHero) : null;
+                                    }).ThenByDescending((Agent a) => this.CheckSpecificTroopName(a)).ThenByDescending((Agent a) => a.CharacterPowerCached).ThenByDescending((Agent a) => a.Character.MaxHitPoints()).Take(num2).ToList<Agent>();
+                                }
+                                else
+                                {
+                                    list2 = (from a in enumerable2
+                                             orderby this.CheckSpecificTroopName(a) descending, a.CharacterPowerCached descending
+                                             select a).Take(num2).ToList<Agent>();
+                                }
+                                bool flag9 = flag7;
+                                if (flag9)
+                                {
+                                    list2.Add(this._bodyguardFormation4.Captain);
+                                }
+                                this.TransferUnits(list2, this._bodyguardFormation4, false);
+                                TacticComponent.SetDefaultBehaviorWeights(this._bodyguardFormation4);
+                                BehaviorProtectVIPAgent behavior = this._bodyguardFormation4.AI.GetBehavior<BehaviorProtectVIPAgent>();
+                                bool flag10 = behavior == null;
+                                if (flag10)
+                                {
+                                    this._bodyguardFormation4.AI.AddAiBehavior(new BehaviorProtectVIPAgent(this._bodyguardFormation4));
+                                    behavior = this._bodyguardFormation4.AI.GetBehavior<BehaviorProtectVIPAgent>();
+                                }
+                                behavior.ResetBehavior();
+                                behavior.VIP = chosenAgent;
+
+                                this._bodyguardFormation4.AI.SetBehaviorWeight<BehaviorProtectVIPAgent>(100f);
+                                bool flag11 = this._bodyguardFormation4.QuerySystem.MainClass == FormationClass.Bodyguard;
+                                if (flag11)
+                                {
+                                    playerTeam.BodyGuardFormation = this._bodyguardFormation4;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CreatePlayerBodyguards5()
+        {
+            Team playerTeam = this.GetPlayerTeam();
+            bool flag = playerTeam == null || playerTeam.TeamAgents == null || base.Mission == null || base.Mission.CombatType != Mission.MissionCombatType.Combat;
+            if (!flag)
+            {
+
+                bool flag2 = base.Mission.IsSiegeBattle && !this._settings.enableBodyguardsDuringSieges;
+                if (!flag2)
+                {
+                    bool flag3 = !playerTeam.IsPlayerGeneral;
+                    if (!flag3)
+                    {
+                        IEnumerable<Agent> enumerable = this.FilterAgents(playerTeam.TeamAgents.ToList<Agent>().AsEnumerable<Agent>());
+                        int num = MathF.Min((int)((float)enumerable.Count<Agent>() * this._settings.maxBodyguardsPercent), this._settings.maxBodyguards);
+                        FormationClass desiredTroopFormationClass = this._settings.getDesiredTroopFormationClass();
+                        IEnumerable<Agent> enumerable2 = this.SelectTroops5(enumerable, desiredTroopFormationClass);
+                        IEnumerable<Agent> enumerable3 = this.SelectCaptain(enumerable);
+
+
+						bool flag4 = enumerable3.Count<Agent>() > 2;
+
+                        if (flag4)
+                        {
+                            Agent chosenAgent = enumerable3.Last();
+
+							bool flag5 = enumerable2.Count<Agent>() < num && (!this._settings.companionGuardMode || !this._settings.doNotBackfill);
+                            if (flag5)
+                            {
+                                IEnumerable<Agent> source = from a in enumerable.Except(enumerable2)
+                                                            orderby (chosenAgent.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
+                                                            select a;
+                                enumerable2 = enumerable2.Concat(source.Take(num - enumerable2.Count<Agent>())).ToList<Agent>();
+                            }
+                            int num2 = MathF.Min(enumerable2.Count<Agent>(), num);
+                            bool flag6 = this._bodyguardFormation5 != null;
+                            if (flag6)
+                            {
+                                // this.ReleaseBodyguards5(null);
+                            }
+                            bool flag7 = false;
+                            bool flag8 = num2 > 0;
+                            if (flag8)
+                            {
+                                this._bodyguardFormation5 = playerTeam.GetFormation(FormationClass.Bodyguard);
+                                if (chosenAgent.MountAgent == null || !chosenAgent.HasMount)
+                                    this._bodyguardFormation5.RidingOrder = RidingOrder.RidingOrderDismount;
+                                this._bodyguardFormation5.SetMovementOrder(MovementOrder.MovementOrderMove(chosenAgent.GetWorldPosition()));
+                                this._bodyguardFormation5.SetControlledByAI(true, false);
+
+                                
+
+                                bool companionGuardMode = this._settings.companionGuardMode;
+                                List<Agent> list2;
+                                if (companionGuardMode)
+                                {
+                                    list2 = enumerable2.OrderByDescending(delegate (Agent a)
+                                    {
+                                        BasicCharacterObject character = a.Character;
+                                        return (character != null) ? new bool?(character.IsHero) : null;
+                                    }).ThenByDescending((Agent a) => this.CheckSpecificTroopName(a)).ThenByDescending((Agent a) => a.CharacterPowerCached).ThenByDescending((Agent a) => a.Character.MaxHitPoints()).Take(num2).ToList<Agent>();
+                                }
+                                else
+                                {
+                                    list2 = (from a in enumerable2
+                                             orderby this.CheckSpecificTroopName(a) descending, a.CharacterPowerCached descending
+                                             select a).Take(num2).ToList<Agent>();
+                                }
+                                bool flag9 = flag7;
+                                if (flag9)
+                                {
+                                    list2.Add(this._bodyguardFormation5.Captain);
+                                }
+                                this.TransferUnits(list2, this._bodyguardFormation5, false);
+                                TacticComponent.SetDefaultBehaviorWeights(this._bodyguardFormation5);
+                                BehaviorProtectVIPAgent behavior = this._bodyguardFormation5.AI.GetBehavior<BehaviorProtectVIPAgent>();
+                                bool flag10 = behavior == null;
+                                if (flag10)
+                                {
+                                    this._bodyguardFormation5.AI.AddAiBehavior(new BehaviorProtectVIPAgent(this._bodyguardFormation5));
+                                    behavior = this._bodyguardFormation5.AI.GetBehavior<BehaviorProtectVIPAgent>();
+                                }
+                                behavior.ResetBehavior();
+                                behavior.VIP = chosenAgent;
+
+                                this._bodyguardFormation5.AI.SetBehaviorWeight<BehaviorProtectVIPAgent>(100f);
+                                bool flag11 = this._bodyguardFormation5.QuerySystem.MainClass == FormationClass.Bodyguard;
+                                if (flag11)
+                                {
+                                    playerTeam.BodyGuardFormation = this._bodyguardFormation5;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Token: 0x06000030 RID: 48 RVA: 0x00002880 File Offset: 0x00000A80
         private void CreateAIBodyguards(Team team)
 		{
@@ -485,6 +778,221 @@ namespace Bodyguards
                 return result;
             });
         }
+        private IEnumerable<Agent> SelectTroops3(IEnumerable<Agent> troopList, FormationClass specificFormation)
+        {
+            return troopList.Where(delegate (Agent a)
+            {
+                bool flag = this._settings.useSpecificTroop && this.CheckSpecificTroopName(a);
+                bool result;
+                if (flag)
+                {
+                    result = true;
+                }
+                else
+                {
+                    bool companionGuardMode = this._settings.companionGuardMode;
+                    if (companionGuardMode)
+                    {
+                        bool flag2 = a.IsHero && !this.IsBodyguardHero3(a.Character);
+                        if (flag2)
+                        {
+                            bool onlyUseManuallySelectedCompanions = this._settings.onlyUseManuallySelectedCompanions;
+                            if (onlyUseManuallySelectedCompanions)
+                            {
+                                return false;
+                            }
+                            bool flag3 = !this.HeroIsInPlayerClan(a.Character.Id);
+                            if (flag3)
+                            {
+                                return false;
+                            }
+                            bool flag4 = a.Formation != null && a.Formation.Captain != null && a.Formation.Captain.Equals(a);
+                            if (flag4)
+                            {
+                                return false;
+                            }
+                        }
+                        bool flag5 = this._settings.doNotBackfill && !a.IsHero;
+                        if (flag5)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        bool isHero = a.IsHero;
+                        if (isHero)
+                        {
+                            return false;
+                        }
+                    }
+                    bool flag6 = a.IsHero || a.Character.DefaultFormationClass == specificFormation;
+                    result = flag6;
+                }
+                return result;
+            });
+        }
+
+        private IEnumerable<Agent> SelectTroops4(IEnumerable<Agent> troopList, FormationClass specificFormation)
+        {
+            return troopList.Where(delegate (Agent a)
+            {
+                bool flag = this._settings.useSpecificTroop && this.CheckSpecificTroopName(a);
+                bool result;
+                if (flag)
+                {
+                    result = true;
+                }
+                else
+                {
+                    bool companionGuardMode = this._settings.companionGuardMode;
+                    if (companionGuardMode)
+                    {
+                        bool flag2 = a.IsHero && !this.IsBodyguardHero4(a.Character);
+                        if (flag2)
+                        {
+                            bool onlyUseManuallySelectedCompanions = this._settings.onlyUseManuallySelectedCompanions;
+                            if (onlyUseManuallySelectedCompanions)
+                            {
+                                return false;
+                            }
+                            bool flag3 = !this.HeroIsInPlayerClan(a.Character.Id);
+                            if (flag3)
+                            {
+                                return false;
+                            }
+                            bool flag4 = a.Formation != null && a.Formation.Captain != null && a.Formation.Captain.Equals(a);
+                            if (flag4)
+                            {
+                                return false;
+                            }
+                        }
+                        bool flag5 = this._settings.doNotBackfill && !a.IsHero;
+                        if (flag5)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        bool isHero = a.IsHero;
+                        if (isHero)
+                        {
+                            return false;
+                        }
+                    }
+                    bool flag6 = a.IsHero || a.Character.DefaultFormationClass == specificFormation;
+                    result = flag6;
+                }
+                return result;
+            });
+        }
+
+        private IEnumerable<Agent> SelectTroops5(IEnumerable<Agent> troopList, FormationClass specificFormation)
+        {
+            return troopList.Where(delegate (Agent a)
+            {
+                bool flag = this._settings.useSpecificTroop && this.CheckSpecificTroopName(a);
+                bool result;
+                if (flag)
+                {
+                    result = true;
+                }
+                else
+                {
+                    bool companionGuardMode = this._settings.companionGuardMode;
+                    if (companionGuardMode)
+                    {
+                        bool flag2 = a.IsHero && !this.IsBodyguardHero5(a.Character);
+                        if (flag2)
+                        {
+                            bool onlyUseManuallySelectedCompanions = this._settings.onlyUseManuallySelectedCompanions;
+                            if (onlyUseManuallySelectedCompanions)
+                            {
+                                return false;
+                            }
+                            bool flag3 = !this.HeroIsInPlayerClan(a.Character.Id);
+                            if (flag3)
+                            {
+                                return false;
+                            }
+                            bool flag4 = a.Formation != null && a.Formation.Captain != null && a.Formation.Captain.Equals(a);
+                            if (flag4)
+                            {
+                                return false;
+                            }
+                        }
+                        bool flag5 = this._settings.doNotBackfill && !a.IsHero;
+                        if (flag5)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        bool isHero = a.IsHero;
+                        if (isHero)
+                        {
+                            return false;
+                        }
+                    }
+                    bool flag6 = a.IsHero || a.Character.DefaultFormationClass == specificFormation;
+                    result = flag6;
+                }
+                return result;
+            });
+        }
+
+        private IEnumerable<Agent> SelectCaptain(IEnumerable<Agent> troopList)
+        {
+            return troopList.Where(delegate (Agent a)
+            {
+                bool flag = this._settings.useSpecificTroop && this.CheckSpecificTroopName(a);
+                bool result;
+                if (flag)
+                {
+                    result = true;
+                }
+                else
+                {
+                    bool companionGuardMode = this._settings.companionGuardMode;
+                    if (companionGuardMode)
+                    {
+                        bool flag2 = a.IsHero && !this.IsBodyguardCaptain(a.Character);
+                        if (flag2)
+                        {
+                            bool onlyUseManuallySelectedCompanions = this._settings.onlyUseManuallySelectedCompanions;
+                            if (onlyUseManuallySelectedCompanions)
+                            {
+                                return false;
+                            }
+                            bool flag3 = !this.HeroIsInPlayerClan(a.Character.Id);
+                            if (flag3)
+                            {
+                                return false;
+                            }
+                        }
+                        bool flag4 = this._settings.doNotBackfill && !a.IsHero;
+                        if (flag4)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        bool isHero = a.IsHero;
+                        if (isHero)
+                        {
+                            return false;
+                        }
+                    }
+                    bool flag5 = a.IsHero;
+                    result = flag5;
+                }
+                return result;
+            });
+        }
+
 
         // Token: 0x06000034 RID: 52 RVA: 0x00002B24 File Offset: 0x00000D24
         private void TransferUnits(List<Agent> units, Formation newFormation, bool defaultFormations = false)
@@ -578,7 +1086,72 @@ namespace Bodyguards
             return result;
         }
 
-        // Token: 0x06000037 RID: 55 RVA: 0x00002D98 File Offset: 0x00000F98
+        private bool IsBodyguardHero3(BasicCharacterObject c)
+        {
+            bool flag = Campaign.Current == null || this._behavior == null || !c.IsHero;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                CharacterObject @object = Campaign.Current.ObjectManager.GetObject<CharacterObject>(c.StringId);
+                bool flag2 = @object == null;
+                result = (!flag2 && this._behavior.IsBodyguard3(@object.HeroObject));
+            }
+            return result;
+        }
+        private bool IsBodyguardHero4(BasicCharacterObject c)
+        {
+            bool flag = Campaign.Current == null || this._behavior == null || !c.IsHero;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                CharacterObject @object = Campaign.Current.ObjectManager.GetObject<CharacterObject>(c.StringId);
+                bool flag2 = @object == null;
+                result = (!flag2 && this._behavior.IsBodyguard4(@object.HeroObject));
+            }
+            return result;
+        }
+        private bool IsBodyguardHero5(BasicCharacterObject c)
+        {
+            bool flag = Campaign.Current == null || this._behavior == null || !c.IsHero;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                CharacterObject @object = Campaign.Current.ObjectManager.GetObject<CharacterObject>(c.StringId);
+                bool flag2 = @object == null;
+                result = (!flag2 && this._behavior.IsBodyguard5(@object.HeroObject));
+            }
+            return result;
+        }
+        private bool IsBodyguardCaptain(BasicCharacterObject c)
+        {
+            bool flag = Campaign.Current == null || this._behavior == null || !c.IsHero;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                CharacterObject @object = Campaign.Current.ObjectManager.GetObject<CharacterObject>(c.StringId);
+                bool flag2 = @object == null;
+                result = (!flag2 && this._behavior.IsCaptain(@object.HeroObject));
+            }
+            return result;
+        }
+
+		// Token: 0x06000037 RID: 55 RVA: 0x00002D98 File Offset: 0x00000F98
         private Formation FindEmptyFormation(Team team)
 		{
 			foreach (FormationClass formationClass in this._formationList)
@@ -795,7 +1368,7 @@ namespace Bodyguards
                     else
                     {
                         this.CreatePlayerBodyguards();
-                        InformationManager.DisplayMessage(new InformationMessage("Creating a bodyguard detail of " + this.GetBodyguardCount().ToString() + " soldiers.", Colors.Green));
+                        InformationManager.DisplayMessage(new InformationMessage("Creating a bodyguard1 detail of " + this.GetBodyguardCount().ToString() + " soldiers.", Colors.Green));
                     }
                 }
 				if (flag3ForKeyF2)
@@ -808,7 +1381,7 @@ namespace Bodyguards
 					else
 					{
 						this.CreatePlayerBodyguards2();
-						InformationManager.DisplayMessage(new InformationMessage("Creating a bodyguard detail of " + this.GetBodyguardCount2().ToString() + " soldiers.", Colors.Green));
+						InformationManager.DisplayMessage(new InformationMessage("Creating a bodyguard2 detail of " + this.GetBodyguardCount2().ToString() + " soldiers.", Colors.Green));
 					}
 				}
 			}
@@ -826,8 +1399,12 @@ namespace Bodyguards
 				{
                     this.CreatePlayerBodyguards();
                     this.CreatePlayerBodyguards2();
-				}
-				bool flag2 = !this._settings.enableBodyguardsForAIGenerals;
+                    this.CreatePlayerBodyguards3();
+                    this.CreatePlayerBodyguards4();
+                    this.CreatePlayerBodyguards5();
+
+                }
+                bool flag2 = !this._settings.enableBodyguardsForAIGenerals;
 				if (!flag2)
 				{
 					foreach (Team team in base.Mission.Teams)
@@ -861,6 +1438,9 @@ namespace Bodyguards
 		// Token: 0x04000010 RID: 16
 		private Formation _bodyguardFormation;
         private Formation _bodyguardFormation2;
+		private Formation _bodyguardFormation3;
+		private Formation _bodyguardFormation4;
+        private Formation _bodyguardFormation5;
 
         // Token: 0x04000011 RID: 17
         private readonly int _maxAIBodyguards = 5;
