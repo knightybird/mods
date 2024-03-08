@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -242,17 +243,45 @@ namespace Bodyguards
                         FormationClass desiredTroopFormationClass = this._settings.getDesiredTroopFormationClass();
                         IEnumerable<Agent> enumerable2 = this.SelectTroops3(enumerable, desiredTroopFormationClass);
                         IEnumerable<Agent> _chosenAgents = this.SelectCaptain(enumerable);
+                        IEnumerable<Hero> chosenAgent2 = this._behavior.GetCaptains;
+                        List<Agent> agentsList = new List<Agent>();
+ 
 
 
-                        bool flag4 = _chosenAgents != null && _chosenAgents.Count<Agent>() > 0;
-                        InformationManager.DisplayMessage(new InformationMessage("number of captains: " + _chosenAgents.Count<Agent>().ToString(), Colors.Green));
+                        int minLength = Math.Min(_chosenAgents.Count<Agent>(), chosenAgent2.Count());
+                        
+
+                        for (int i = 0; i < chosenAgent2.Count(); i++)
+                        {   
+                            var currentHero = chosenAgent2.ElementAt(i);
+                            bool foundMatch = false;
+
+
+                            for (int j = 0; j < _chosenAgents.Count() && !foundMatch; j++)
+                            {
+                                var currentAgent = _chosenAgents.ElementAt(j);
+
+                                if (currentAgent.Name.ToString() == currentHero.Name.ToString())
+                                {
+                                    InformationManager.DisplayMessage(new InformationMessage($"found match {currentAgent.Name}, with {currentHero.Name}", Colors.Green));
+                                    agentsList.Add(currentAgent);
+                                    foundMatch = true;
+                                }
+                            }
+
+                        }
+                        
                         int count = 0;
-                        foreach (var captain in _behavior.GetCaptains)
-                            InformationManager.DisplayMessage(new InformationMessage($"Name: {captain.Name}, ID: {captain.Id}" + _chosenAgents.ToList<Agent>()[count], Colors.Green));
+                        foreach (Agent agent in agentsList)
+                        {
+                            InformationManager.DisplayMessage(new InformationMessage($"{count}, Name: {agent.Name}, Health: {agent.Health}", Colors.Green));
                             count++;
+                        }
 
 
 
+
+                        bool flag4 = _chosenAgents != null;
 
                         if (flag4)
                         {
@@ -277,9 +306,9 @@ namespace Bodyguards
                             if (flag8)
                             {
                                 this._bodyguardFormation3 = playerTeam.GetFormation(FormationClass.Bodyguard);
-                                if (chosenAgent.MountAgent == null || !chosenAgent.HasMount)
+                                if (agentsList[0].MountAgent == null || !agentsList[0].HasMount)
                                     this._bodyguardFormation3.RidingOrder = RidingOrder.RidingOrderDismount;
-                                this._bodyguardFormation3.SetMovementOrder(MovementOrder.MovementOrderMove(chosenAgent.GetWorldPosition()));
+                                this._bodyguardFormation3.SetMovementOrder(MovementOrder.MovementOrderMove(agentsList[0].GetWorldPosition()));
                                 this._bodyguardFormation3.SetControlledByAI(true, false);
 
 
@@ -315,7 +344,7 @@ namespace Bodyguards
                                     behavior = this._bodyguardFormation3.AI.GetBehavior<BehaviorProtectVIPAgent>();
                                 }
                                 behavior.ResetBehavior();
-                                behavior.VIP = chosenAgent;
+                                behavior.VIP = agentsList[0];
 
                                 this._bodyguardFormation3.AI.SetBehaviorWeight<BehaviorProtectVIPAgent>(100f);
                                 bool flag11 = this._bodyguardFormation3.QuerySystem.MainClass == FormationClass.Bodyguard;
