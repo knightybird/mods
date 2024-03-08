@@ -33,8 +33,8 @@ namespace Bodyguards.UIEX
 
             base.OnPropertyChanged("ToggleBodyguardHint2");
             base.OnPropertyChanged("ToggleBodyguardActionName3");
-            base.OnPropertyChanged("ToggleBodyguardActionName4"); 
-            base.OnPropertyChanged("ToggleBodyguardActionName5");
+/*            base.OnPropertyChanged("ToggleBodyguardActionName4"); 
+            base.OnPropertyChanged("ToggleBodyguardActionName5");*/
 
             base.OnPropertyChanged("CanBeCaptain");
             base.OnPropertyChanged("ToggleCaptainActionName");
@@ -100,7 +100,7 @@ namespace Bodyguards.UIEX
             }
         }
 
-        [DataSourceMethod]
+ /*       [DataSourceMethod]
         public void ToggleBodyguard4()
         {
             bool flag = this._behavior == null;
@@ -136,7 +136,7 @@ namespace Bodyguards.UIEX
                 }
                 this.OnRefresh();
             }
-        }
+        }*/
 
         [DataSourceMethod]
         public void ToggleCaptain()
@@ -214,7 +214,7 @@ namespace Bodyguards.UIEX
                 return this._behavior.IsBodyguard3(this._hero) ? new TextObject("Remove from AIBodygrds1", null).ToString() : new TextObject("Add to AIBodygrds1", null).ToString();
             }
         }
-
+/*
         [DataSourceProperty]
         public string ToggleBodyguardActionName4
         {
@@ -232,7 +232,7 @@ namespace Bodyguards.UIEX
                 return this._behavior.IsBodyguard5(this._hero) ? new TextObject("Remove from AIBodygrds3", null).ToString() : new TextObject("Add to AIBodygrds3", null).ToString();
             }
         }
-
+*/
         [DataSourceProperty]
         public string ToggleCaptainActionName
         {
