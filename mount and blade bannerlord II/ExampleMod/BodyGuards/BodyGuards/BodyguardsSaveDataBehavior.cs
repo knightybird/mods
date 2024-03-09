@@ -127,6 +127,22 @@ namespace Bodyguards
             }
         }
 
+        internal IEnumerable<Hero> GetBodyguards4
+        {
+            get
+            {
+                return this._chosenBodyguards4.AsEnumerable<Hero>();
+            }
+        }
+
+        internal IEnumerable<Hero> GetBodyguards5
+        {
+            get
+            {
+                return this._chosenBodyguards5.AsEnumerable<Hero>();
+            }
+        }
+
         internal IEnumerable<Hero> GetCaptains
         {
             get
