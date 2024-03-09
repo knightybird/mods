@@ -229,6 +229,7 @@ namespace Bodyguards
 
         private void CreateCaptainBodyguards(int index,  Formation bodyguardFormation, IEnumerable<Agent> _allAgents, IEnumerable<Agent> _selectedTroops)
         {
+
             Team playerTeam = GetPlayerTeam();
             bool flag = playerTeam == null || playerTeam.TeamAgents == null || base.Mission == null || base.Mission.CombatType != Mission.MissionCombatType.Combat;
             if (!flag)
@@ -239,6 +240,8 @@ namespace Bodyguards
                     bool flag3 = !playerTeam.IsPlayerGeneral;
                     if (!flag3)
                     {
+                        int num = MathF.Min((int)((float)_allAgents.Count<Agent>() * this._settings.maxBodyguardsPercent), this._settings.maxBodyguards);
+
                         float maxBodyguardsPercent = _settings.maxBodyguardsPercent;
                         int minNumOfBodyguards = MathF.Min((int)((float)_allAgents.Count<Agent>() * maxBodyguardsPercent), _settings.maxBodyguards);
                         //_desiredTroopFormationClass = _settings.getDesiredTroopFormationClass();
@@ -271,24 +274,35 @@ namespace Bodyguards
                             bodyguardFormation.SetMovementOrder(MovementOrder.MovementOrderMove(candidateCaptain.GetWorldPosition()));
                             bodyguardFormation.SetControlledByAI(true, false);
 
-                            bool companionGuardMode = _settings.companionGuardMode;
-                            List<Agent> finalSelection;
+                            bool companionGuardMode = this._settings.companionGuardMode;
+                            List<Agent> list2;
+                            int num2 = MathF.Min(_selectedTroops.Count<Agent>(), num);
+                            if (this._bodyguardFormation3 != null)
+                            {
+                                this.ReleaseCaptainBodyguards(null);
+                            }
                             if (companionGuardMode)
                             {
-                                Func<Agent, bool?> heroPrioritySelector = a => a.Character.IsHero;
-                                finalSelection = _selectedTroops.OrderByDescending(heroPrioritySelector).ThenByDescending(a => CheckSpecificTroopName(a)).ThenByDescending(a => a.CharacterPowerCached).ThenByDescending(a => a.Character.MaxHitPoints()).Take(count).ToList<Agent>();
+                                list2 = _selectedTroops.OrderByDescending(delegate (Agent a)
+                                {
+                                    BasicCharacterObject character = a.Character;
+                                    return (character != null) ? new bool?(character.IsHero) : null;
+                                }).ThenByDescending((Agent a) => this.CheckSpecificTroopName(a)).ThenByDescending((Agent a) => a.CharacterPowerCached).ThenByDescending((Agent a) => a.Character.MaxHitPoints()).Take(num2).ToList<Agent>();
                             }
                             else
                             {
-                                finalSelection = _selectedTroops.OrderByDescending(a => CheckSpecificTroopName(a)).ThenByDescending(a => a.CharacterPowerCached).Take(count).ToList<Agent>();
+                                list2 = (from a in _selectedTroops
+                                         orderby this.CheckSpecificTroopName(a) descending, a.CharacterPowerCached descending
+                                         select a).Take(num2).ToList<Agent>();
                             }
+
                             bool flag7 = flag6;
                             if (flag7)
                             {
-                                finalSelection.Add(bodyguardFormation.Captain);
+                                list2.Add(bodyguardFormation.Captain);
                             }
 
-                            this.TransferUnits(finalSelection, bodyguardFormation, false);
+                            this.TransferUnits(list2, bodyguardFormation, false);
                             TacticComponent.SetDefaultBehaviorWeights(bodyguardFormation);
                             BehaviorProtectVIPAgent behavior = bodyguardFormation.AI.GetBehavior<BehaviorProtectVIPAgent>();
                             if (behavior == null)
@@ -1203,6 +1217,68 @@ namespace Bodyguards
             return result;
         }
 
+        private int GetCaptainBodyguardCount()
+        {
+            Team playerTeam = this.GetPlayerTeam();
+            bool flag = playerTeam == null || this._bodyguardFormation3 == null;
+            int result;
+            if (flag)
+            {
+                result = 0;
+            }
+            else
+            {
+                bool flag2 = this._bodyguardFormation3.CountOfUnits == 0;
+                if (flag2)
+                {
+                    this.DisableBodyguardBehavior(this._bodyguardFormation3);
+                }
+                result = this._bodyguardFormation3.CountOfUnits;
+            }
+            return result;
+        }
+
+        private int GetCaptainBodyguardCount2()
+        {
+            Team playerTeam = this.GetPlayerTeam();
+            bool flag = playerTeam == null || this._bodyguardFormation4 == null;
+            int result;
+            if (flag)
+            {
+                result = 0;
+            }
+            else
+            {
+                bool flag2 = this._bodyguardFormation4.CountOfUnits == 0;
+                if (flag2)
+                {
+                    this.DisableBodyguardBehavior(this._bodyguardFormation4);
+                }
+                result = this._bodyguardFormation4.CountOfUnits;
+            }
+            return result;
+        }
+
+        private int GetCaptainBodyguardCount3()
+        {
+            Team playerTeam = this.GetPlayerTeam();
+            bool flag = playerTeam == null || this._bodyguardFormation5 == null;
+            int result;
+            if (flag)
+            {
+                result = 0;
+            }
+            else
+            {
+                bool flag2 = this._bodyguardFormation5.CountOfUnits == 0;
+                if (flag2)
+                {
+                    this.DisableBodyguardBehavior(this._bodyguardFormation5);
+                }
+                result = this._bodyguardFormation5.CountOfUnits;
+            }
+            return result;
+        }
 
         // Token: 0x0600003B RID: 59 RVA: 0x00002FD0 File Offset: 0x000011D0
         private Team GetPlayerTeam()
@@ -1274,6 +1350,72 @@ namespace Bodyguards
             }
         }
 
+        private void ReleaseCaptainBodyguards(Formation guardFormation = null)
+        {
+            bool flag = guardFormation == null;
+            if (flag)
+            {
+                guardFormation = this._bodyguardFormation3;
+                bool flag2 = guardFormation == null;
+                if (flag2)
+                {
+                    return;
+                }
+            }
+            IEnumerable<Agent> unitsWithoutDetachedOnes = guardFormation.GetUnitsWithoutDetachedOnes();
+            this.DisableBodyguardBehavior(guardFormation);
+            bool flag3 = unitsWithoutDetachedOnes.Count<Agent>() == 0;
+            if (!flag3)
+            {
+                InformationManager.DisplayMessage(new InformationMessage("Returning captain bodyguards1  to their usual formations.", Colors.Green));
+                this.TransferUnits(unitsWithoutDetachedOnes.ToList<Agent>(), null, true);
+            }
+        }
+
+        private void ReleaseCaptainBodyguards2(Formation guardFormation = null)
+        {
+            bool flag = guardFormation == null;
+            if (flag)
+            {
+                guardFormation = this._bodyguardFormation4;
+                bool flag2 = guardFormation == null;
+                if (flag2)
+                {
+                    return;
+                }
+            }
+            IEnumerable<Agent> unitsWithoutDetachedOnes = guardFormation.GetUnitsWithoutDetachedOnes();
+            this.DisableBodyguardBehavior(guardFormation);
+            bool flag3 = unitsWithoutDetachedOnes.Count<Agent>() == 0;
+            if (!flag3)
+            {
+                InformationManager.DisplayMessage(new InformationMessage("Returning captain bodyguards2  to their usual formations.", Colors.Green));
+                this.TransferUnits(unitsWithoutDetachedOnes.ToList<Agent>(), null, true);
+            }
+        }
+
+        private void ReleaseCaptainBodyguards3(Formation guardFormation = null)
+        {
+            bool flag = guardFormation == null;
+            if (flag)
+            {
+                guardFormation = this._bodyguardFormation5;
+                bool flag2 = guardFormation == null;
+                if (flag2)
+                {
+                    return;
+                }
+            }
+            IEnumerable<Agent> unitsWithoutDetachedOnes = guardFormation.GetUnitsWithoutDetachedOnes();
+            this.DisableBodyguardBehavior(guardFormation);
+            bool flag3 = unitsWithoutDetachedOnes.Count<Agent>() == 0;
+            if (!flag3)
+            {
+                InformationManager.DisplayMessage(new InformationMessage("Returning captain bodyguards3  to their usual formations.", Colors.Green));
+                this.TransferUnits(unitsWithoutDetachedOnes.ToList<Agent>(), null, true);
+            }
+        }
+
         // Token: 0x0600003D RID: 61 RVA: 0x000030D0 File Offset: 0x000012D0
         public override void OnMissionTick(float dt)
 		{
@@ -1334,10 +1476,30 @@ namespace Bodyguards
                 if (flagForKeyF) 
                 {
 
-
-                    this.CreateCaptainBodyguards(0, this._bodyguardFormation3, agents, selectedTroops3);
-                    this.CreateCaptainBodyguards(1, this._bodyguardFormation4, agents, selectedTroops4);
-                    this.CreateCaptainBodyguards(2, this._bodyguardFormation5, agents, selectedTroops5);
+                    if (this.GetCaptainBodyguardCount() > 0)
+                    {
+                        this.ReleaseCaptainBodyguards(null);
+                    }
+                    else
+                    { 
+                        this.CreateCaptainBodyguards(0, this._bodyguardFormation3, agents, selectedTroops3); 
+                    }
+                    if (this.GetCaptainBodyguardCount2() > 0)
+                    {
+                        this.ReleaseCaptainBodyguards2(null);
+                    }
+                    else
+                    {
+                        this.CreateCaptainBodyguards(1, this._bodyguardFormation4, agents, selectedTroops4);
+                    }
+                    if (this.GetCaptainBodyguardCount3() > 0)
+                    {
+                        this.ReleaseCaptainBodyguards3(null);
+                    }
+                    else
+                    {
+                        this.CreateCaptainBodyguards(2, this._bodyguardFormation5, agents, selectedTroops5);
+                    }
 
                 }
 
@@ -1345,8 +1507,20 @@ namespace Bodyguards
                 {
                     if (this._bodyguardFormation3 != null && this._bodyguardFormation3.CountOfUnits > 0)
                     {
-                        InformationManager.DisplayMessage(new InformationMessage("Dismount bodyguards", Colors.Green));
+                        InformationManager.DisplayMessage(new InformationMessage("Dismount bodyguards3", Colors.Green));
                         this._bodyguardFormation3.RidingOrder = RidingOrder.RidingOrderDismount;
+
+                    }
+                    if (this._bodyguardFormation4 != null && this._bodyguardFormation4.CountOfUnits > 0)
+                    {
+                        InformationManager.DisplayMessage(new InformationMessage("Dismount bodyguards4", Colors.Green));
+                        this._bodyguardFormation4.RidingOrder = RidingOrder.RidingOrderDismount;
+
+                    }
+                    if (this._bodyguardFormation5 != null && this._bodyguardFormation5.CountOfUnits > 0)
+                    {
+                        InformationManager.DisplayMessage(new InformationMessage("Dismount bodyguards5", Colors.Green));
+                        this._bodyguardFormation5.RidingOrder = RidingOrder.RidingOrderDismount;
 
                     }
                 }
