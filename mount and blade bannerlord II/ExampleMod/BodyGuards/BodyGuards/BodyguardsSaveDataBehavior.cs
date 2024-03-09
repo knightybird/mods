@@ -24,7 +24,7 @@ namespace Bodyguards
         {
             return this._chosenBodyguards3.Contains(hero);
         }
-        /*
+        
         internal bool IsBodyguard4(Hero hero)
         {
             return this._chosenBodyguards4.Contains(hero);
@@ -34,7 +34,7 @@ namespace Bodyguards
         {
             return this._chosenBodyguards5.Contains(hero);
         }
-        */
+        
         internal bool IsCaptain(Hero hero)
         {
             return this._chosenCaptains.Contains(hero);
@@ -55,7 +55,7 @@ namespace Bodyguards
         {
             this._chosenBodyguards3.Add(hero);
         }
-        /*
+        
         internal void AddBodyguard4(Hero hero)
         {
             this._chosenBodyguards4.Add(hero);
@@ -64,7 +64,7 @@ namespace Bodyguards
         {
             this._chosenBodyguards5.Add(hero);
         }
-        */
+        
         internal void AddCaptain(Hero hero)
         {
             this._chosenCaptains.Add(hero);
@@ -85,7 +85,7 @@ namespace Bodyguards
         {
             this._chosenBodyguards3.Remove(hero);
         }
-        /*
+        
         internal void RemoveBodyguard4(Hero hero)
         {
             this._chosenBodyguards4.Remove(hero);
@@ -95,7 +95,7 @@ namespace Bodyguards
         {
             this._chosenBodyguards5.Remove(hero);
         }
-        */
+        
         internal void RemoveCaptain(Hero hero)
         {
             this._chosenCaptains.Remove(hero);
@@ -146,8 +146,8 @@ namespace Bodyguards
 			dataStore.SyncData<List<Hero>>("_chosenBodyguards", ref this._chosenBodyguards);
             dataStore.SyncData<List<Hero>>("_chosenBodyguards2", ref this._chosenBodyguards2);
             dataStore.SyncData<List<Hero>>("_chosenBodyguards3", ref this._chosenBodyguards3);
-            /*dataStore.SyncData<List<Hero>>("_chosenBodyguards4", ref this._chosenBodyguards4);
-            dataStore.SyncData<List<Hero>>("_chosenBodyguards5", ref this._chosenBodyguards5);*/
+            dataStore.SyncData<List<Hero>>("_chosenBodyguards4", ref this._chosenBodyguards4);
+            dataStore.SyncData<List<Hero>>("_chosenBodyguards5", ref this._chosenBodyguards5);
             dataStore.SyncData<List<Hero>>("_chosenCaptains", ref this._chosenCaptains);
 
         }
@@ -156,8 +156,8 @@ namespace Bodyguards
         private List<Hero> _chosenBodyguards = new List<Hero>();
         private List<Hero> _chosenBodyguards2 = new List<Hero>();
         private List<Hero> _chosenBodyguards3 = new List<Hero>();
-        /*private List<Hero> _chosenBodyguards4 = new List<Hero>();
-        private List<Hero> _chosenBodyguards5 = new List<Hero>(); */
+        private List<Hero> _chosenBodyguards4 = new List<Hero>();
+        private List<Hero> _chosenBodyguards5 = new List<Hero>(); 
         private List<Hero> _chosenCaptains = new List<Hero>();
 
 

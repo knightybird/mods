@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
@@ -20,13 +21,14 @@ namespace Bodyguards
 		public AddBodyguardsMissionBehavior()
 		{
 			this._settings = new BodyguardsSettings();
-            //this._chosenAgents = new List<Agent>();
+            this._captainList = new List<Agent>();
+            InitializeChosenAgents();
         }
 
         // Token: 0x0600002F RID: 47 RVA: 0x000023F4 File Offset: 0x000005F4
         private void CreatePlayerBodyguards()
 		{
-			Team playerTeam = this.GetPlayerTeam();
+            Team playerTeam = this.GetPlayerTeam();
 			bool flag = playerTeam == null || playerTeam.TeamAgents == null || base.Mission == null || base.Mission.CombatType != Mission.MissionCombatType.Combat || base.Mission.MainAgent == null;
 			if (!flag)
 			{
@@ -242,14 +244,12 @@ namespace Bodyguards
                         int num = MathF.Min((int)((float)enumerable.Count<Agent>() * this._settings.maxBodyguardsPercent), this._settings.maxBodyguards);
                         FormationClass desiredTroopFormationClass = this._settings.getDesiredTroopFormationClass();
                         IEnumerable<Agent> enumerable2 = this.SelectTroops3(enumerable, desiredTroopFormationClass);
-                        IEnumerable<Agent> _chosenAgents = this.SelectCaptain(enumerable);
+ /*                       IEnumerable<Agent> _chosenAgents = this.SelectCaptain(enumerable);
                         IEnumerable<Hero> chosenAgent2 = this._behavior.GetCaptains;
                         List<Agent> agentsList = new List<Agent>();
- 
-
+                        
 
                         int minLength = Math.Min(_chosenAgents.Count<Agent>(), chosenAgent2.Count());
-                        
 
                         for (int i = 0; i < chosenAgent2.Count(); i++)
                         {   
@@ -259,40 +259,43 @@ namespace Bodyguards
 
                             for (int j = 0; j < _chosenAgents.Count() && !foundMatch; j++)
                             {
-                                var currentAgent = _chosenAgents.ElementAt(j);
+                                Agent currentAgent = _chosenAgents.ElementAt(j);
 
                                 if (currentAgent.Name.ToString() == currentHero.Name.ToString())
                                 {
                                     InformationManager.DisplayMessage(new InformationMessage($"found match {currentAgent.Name}, with {currentHero.Name}", Colors.Green));
                                     agentsList.Add(currentAgent);
                                     foundMatch = true;
+                                
                                 }
                             }
 
-                        }
+                        }*/
                         
                         int count = 0;
-                        foreach (Agent agent in agentsList)
+                        foreach (Agent agent in this._captainList)
                         {
-                            InformationManager.DisplayMessage(new InformationMessage($"{count}, Name: {agent.Name}, Health: {agent.Health}", Colors.Green));
+                            InformationManager.DisplayMessage(new InformationMessage($"{this._captainList[count]}, Name: {agent.Name}, Health: {agent.Health}", Colors.Green));
                             count++;
                         }
 
+                        InformationManager.DisplayMessage(new InformationMessage($"total captains: {count}, {_captainList.Count()}, agent[0]: {this._captainList[0]}", Colors.Green));
 
 
 
-                        bool flag4 = _chosenAgents != null;
+
+                        bool flag4 = this._captainList != null && this._captainList.Count() > 0;
 
                         if (flag4)
                         {
-                            Agent chosenAgent = _chosenAgents.ToList<Agent>()[0];
-                            InformationManager.DisplayMessage(new InformationMessage(" testing " + chosenAgent.ToString(), Colors.Green));
+                            Agent captain = this._captainList[0];
+                            InformationManager.DisplayMessage(new InformationMessage(" testing " + captain.ToString(), Colors.Green));
 
                             bool flag5 = enumerable2.Count<Agent>() < num && (!this._settings.companionGuardMode || !this._settings.doNotBackfill);
                             if (flag5)
                             {
                                 IEnumerable<Agent> source = from a in enumerable.Except(enumerable2)
-                                                            orderby (chosenAgent.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
+                                                            orderby (captain.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
                                                             select a;
                                 enumerable2 = enumerable2.Concat(source.Take(num - enumerable2.Count<Agent>())).ToList<Agent>();
                             }
@@ -306,9 +309,9 @@ namespace Bodyguards
                             if (flag8)
                             {
                                 this._bodyguardFormation3 = playerTeam.GetFormation(FormationClass.Bodyguard);
-                                if (agentsList[0].MountAgent == null || !agentsList[0].HasMount)
+                                if (captain.MountAgent == null || !captain.HasMount)
                                     this._bodyguardFormation3.RidingOrder = RidingOrder.RidingOrderDismount;
-                                this._bodyguardFormation3.SetMovementOrder(MovementOrder.MovementOrderMove(agentsList[0].GetWorldPosition()));
+                                this._bodyguardFormation3.SetMovementOrder(MovementOrder.MovementOrderMove(captain.GetWorldPosition()));
                                 this._bodyguardFormation3.SetControlledByAI(true, false);
 
 
@@ -344,7 +347,8 @@ namespace Bodyguards
                                     behavior = this._bodyguardFormation3.AI.GetBehavior<BehaviorProtectVIPAgent>();
                                 }
                                 behavior.ResetBehavior();
-                                behavior.VIP = agentsList[0];
+                                IEnumerable<Agent> enumerablecaptainList = this._captainList;
+                                behavior.VIP = enumerablecaptainList.First();
 
                                 this._bodyguardFormation3.AI.SetBehaviorWeight<BehaviorProtectVIPAgent>(100f);
                                 bool flag11 = this._bodyguardFormation3.QuerySystem.MainClass == FormationClass.Bodyguard;
@@ -358,7 +362,7 @@ namespace Bodyguards
                 }
             }
         }
-        /*
+
         private void CreatePlayerBodyguards4()
         {
             Team playerTeam = this.GetPlayerTeam();
@@ -377,18 +381,19 @@ namespace Bodyguards
                         FormationClass desiredTroopFormationClass = this._settings.getDesiredTroopFormationClass();
                         IEnumerable<Agent> enumerable2 = this.SelectTroops4(enumerable, desiredTroopFormationClass);
 
-                        bool flag4 = this._chosenAgents != null && this._chosenAgents.Count<Agent>() > 1;
+
+                        bool flag4 = this._captainList != null && this._captainList.Count() > 1;
 
                         if (flag4)
                         {
-                            List<Agent> agentList = this._chosenAgents.ToList();
-                            Agent chosenAgent = agentList[1];
+                            Agent captain = this._captainList[1];
+                            InformationManager.DisplayMessage(new InformationMessage(" testing " + captain.ToString(), Colors.Green));
 
                             bool flag5 = enumerable2.Count<Agent>() < num && (!this._settings.companionGuardMode || !this._settings.doNotBackfill);
                             if (flag5)
                             {
                                 IEnumerable<Agent> source = from a in enumerable.Except(enumerable2)
-                                                            orderby (chosenAgent.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
+                                                            orderby (captain.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
                                                             select a;
                                 enumerable2 = enumerable2.Concat(source.Take(num - enumerable2.Count<Agent>())).ToList<Agent>();
                             }
@@ -402,9 +407,9 @@ namespace Bodyguards
                             if (flag8)
                             {
                                 this._bodyguardFormation4 = playerTeam.GetFormation(FormationClass.Bodyguard);
-                                if (chosenAgent.MountAgent == null || !chosenAgent.HasMount)
+                                if (captain.MountAgent == null || !captain.HasMount)
                                     this._bodyguardFormation4.RidingOrder = RidingOrder.RidingOrderDismount;
-                                this._bodyguardFormation4.SetMovementOrder(MovementOrder.MovementOrderMove(chosenAgent.GetWorldPosition()));
+                                this._bodyguardFormation4.SetMovementOrder(MovementOrder.MovementOrderMove(captain.GetWorldPosition()));
                                 this._bodyguardFormation4.SetControlledByAI(true, false);
 
 
@@ -440,7 +445,7 @@ namespace Bodyguards
                                     behavior = this._bodyguardFormation4.AI.GetBehavior<BehaviorProtectVIPAgent>();
                                 }
                                 behavior.ResetBehavior();
-                                behavior.VIP = chosenAgent;
+                                behavior.VIP = captain;
 
                                 this._bodyguardFormation4.AI.SetBehaviorWeight<BehaviorProtectVIPAgent>(100f);
                                 bool flag11 = this._bodyguardFormation4.QuerySystem.MainClass == FormationClass.Bodyguard;
@@ -474,17 +479,18 @@ namespace Bodyguards
                         IEnumerable<Agent> enumerable2 = this.SelectTroops5(enumerable, desiredTroopFormationClass);
 
 
-                        bool flag4 = this._chosenAgents != null && this._chosenAgents.Count<Agent>() > 2;
+                        bool flag4 = this._captainList != null && this._captainList.Count() > 2;
 
                         if (flag4)
                         {
-                            Agent chosenAgent = this._chosenAgents.Last();
+                            Agent captain = this._captainList[2];
+                            InformationManager.DisplayMessage(new InformationMessage(" testing " + captain.ToString(), Colors.Green));
 
-							bool flag5 = enumerable2.Count<Agent>() < num && (!this._settings.companionGuardMode || !this._settings.doNotBackfill);
+                            bool flag5 = enumerable2.Count<Agent>() < num && (!this._settings.companionGuardMode || !this._settings.doNotBackfill);
                             if (flag5)
                             {
                                 IEnumerable<Agent> source = from a in enumerable.Except(enumerable2)
-                                                            orderby (chosenAgent.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
+                                                            orderby (captain.MountAgent == null) ? (!a.HasMount) : a.HasMount descending, a.CharacterPowerCached descending
                                                             select a;
                                 enumerable2 = enumerable2.Concat(source.Take(num - enumerable2.Count<Agent>())).ToList<Agent>();
                             }
@@ -492,19 +498,18 @@ namespace Bodyguards
                             bool flag6 = this._bodyguardFormation5 != null;
                             if (flag6)
                             {
-                                // this.ReleaseBodyguards5(null);
                             }
                             bool flag7 = false;
                             bool flag8 = num2 > 0;
                             if (flag8)
                             {
                                 this._bodyguardFormation5 = playerTeam.GetFormation(FormationClass.Bodyguard);
-                                if (chosenAgent.MountAgent == null || !chosenAgent.HasMount)
+                                if (captain.MountAgent == null || !captain.HasMount)
                                     this._bodyguardFormation5.RidingOrder = RidingOrder.RidingOrderDismount;
-                                this._bodyguardFormation5.SetMovementOrder(MovementOrder.MovementOrderMove(chosenAgent.GetWorldPosition()));
+                                this._bodyguardFormation5.SetMovementOrder(MovementOrder.MovementOrderMove(captain.GetWorldPosition()));
                                 this._bodyguardFormation5.SetControlledByAI(true, false);
 
-                                
+
 
                                 bool companionGuardMode = this._settings.companionGuardMode;
                                 List<Agent> list2;
@@ -537,7 +542,7 @@ namespace Bodyguards
                                     behavior = this._bodyguardFormation5.AI.GetBehavior<BehaviorProtectVIPAgent>();
                                 }
                                 behavior.ResetBehavior();
-                                behavior.VIP = chosenAgent;
+                                behavior.VIP = captain;
 
                                 this._bodyguardFormation5.AI.SetBehaviorWeight<BehaviorProtectVIPAgent>(100f);
                                 bool flag11 = this._bodyguardFormation5.QuerySystem.MainClass == FormationClass.Bodyguard;
@@ -551,7 +556,8 @@ namespace Bodyguards
                 }
             }
         }
-        */
+
+
         // Token: 0x06000030 RID: 48 RVA: 0x00002880 File Offset: 0x00000A80
         private void CreateAIBodyguards(Team team)
 		{
@@ -869,7 +875,7 @@ namespace Bodyguards
             });
         }
 
-/*        private IEnumerable<Agent> SelectTroops4(IEnumerable<Agent> troopList, FormationClass specificFormation)
+        private IEnumerable<Agent> SelectTroops4(IEnumerable<Agent> troopList, FormationClass specificFormation)
         {
             return troopList.Where(delegate (Agent a)
             {
@@ -978,7 +984,7 @@ namespace Bodyguards
                 return result;
             });
         }
-*/
+
         private IEnumerable<Agent> SelectCaptain(IEnumerable<Agent> troopList)
         {
             return troopList.Where(delegate (Agent a)
@@ -1138,7 +1144,7 @@ namespace Bodyguards
             }
             return result;
         }
-    /*    private bool IsBodyguardHero4(BasicCharacterObject c)
+        private bool IsBodyguardHero4(BasicCharacterObject c)
         {
             bool flag = Campaign.Current == null || this._behavior == null || !c.IsHero;
             bool result;
@@ -1169,7 +1175,7 @@ namespace Bodyguards
                 result = (!flag2 && this._behavior.IsBodyguard5(@object.HeroObject));
             }
             return result;
-        }*/
+        }
         private bool IsBodyguardCaptain(BasicCharacterObject c)
         {
             bool flag = Campaign.Current == null || this._behavior == null || !c.IsHero;
@@ -1400,6 +1406,7 @@ namespace Bodyguards
                     if (flag4)
                     {
                         this.ReleaseBodyguards(null);
+
                     }
                     else
                     {
@@ -1431,14 +1438,16 @@ namespace Bodyguards
 			if (!flag)
 			{
 
-                InitializeChosenAgents();
 
                 bool createBodyguardsAtBattleStart = this._settings.createBodyguardsAtBattleStart;
 				if (createBodyguardsAtBattleStart)
 				{
                     this.CreatePlayerBodyguards();
                     this.CreatePlayerBodyguards2();
+
                     this.CreatePlayerBodyguards3();
+                    this.CreatePlayerBodyguards4();
+                    this.CreatePlayerBodyguards5();
 
                 }
                 bool flag2 = !this._settings.enableBodyguardsForAIGenerals;
@@ -1478,28 +1487,48 @@ namespace Bodyguards
 		private Formation _bodyguardFormation3;
 		private Formation _bodyguardFormation4;
         private Formation _bodyguardFormation5;
-        //private IEnumerable<Agent> _chosenAgents;
+        private List<Agent> _captainList;
 
-        public void InitializeChosenAgents()
+
+        private void InitializeChosenAgents()
         {
-            /*
+
             Team playerTeam = this.GetPlayerTeam();
-            bool flag = playerTeam == null || playerTeam.TeamAgents == null || base.Mission == null || base.Mission.CombatType != Mission.MissionCombatType.Combat;
-            if (!flag)
+
+            IEnumerable<Agent> enumerable = this.FilterAgents(playerTeam.TeamAgents.ToList<Agent>().AsEnumerable<Agent>());
+            IEnumerable<Agent> _chosenAgents = SelectCaptain(enumerable);
+            IEnumerable<Hero> chosenAgent2 = this._behavior.GetCaptains;
+
+            for (int i = 0; i < chosenAgent2.Count(); i++)
             {
+                bool foundMatch = false;
+                Hero currentHero = chosenAgent2.ElementAt(i);
 
-                bool flag2 = base.Mission.IsSiegeBattle && !this._settings.enableBodyguardsDuringSieges;
-                if (!flag2)
+                for (int j = 0; j < _chosenAgents.Count() && !foundMatch; j++)
                 {
-                    bool flag3 = !playerTeam.IsPlayerGeneral;
-                    if (!flag3)
-                    {
+                    Agent currentAgent = _chosenAgents.ElementAt(j);
 
-                        IEnumerable<Agent> enumerable = this.FilterAgents(playerTeam.TeamAgents.ToList<Agent>().AsEnumerable<Agent>());
-                        _chosenAgents = SelectCaptain(enumerable);
+                    if (currentAgent.Name.ToString() == currentHero.Name.ToString())
+                    {
+                        InformationManager.DisplayMessage(new InformationMessage($"found match {currentAgent.Name}, with {currentHero.Name}", Colors.Green));
+                        this._captainList.Add(currentAgent);
+                        foundMatch = true;
+
                     }
                 }
-            } */
+            }
+
+            int count = 0;
+            foreach (Agent agent in this._captainList)
+            {
+                InformationManager.DisplayMessage(new InformationMessage($"{this._captainList[count]}, Name: {agent.Name}, Health: {agent.Health}", Colors.Green));
+                count++;
+            }
+
+            InformationManager.DisplayMessage(new InformationMessage($"total captains: {count}, {this._captainList.Count()}, _captainList: {this._captainList}", Colors.Green));
+
+
+
         }
 
 
