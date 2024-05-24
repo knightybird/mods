@@ -1740,6 +1740,8 @@ namespace Bodyguards
                 bool flagForKeyF = missionScreen.InputManager.IsControlDown() && missionScreen.InputManager.IsKeyPressed(key3);
                 bool flagForKeyH = missionScreen.InputManager.IsControlDown() && missionScreen.InputManager.IsKeyPressed(key4);
                 bool flagForKey1 = missionScreen.InputManager.IsControlDown() && missionScreen.InputManager.IsKeyPressed(key5);
+                bool flagForKey2 = missionScreen.InputManager.IsAltDown() && missionScreen.InputManager.IsKeyPressed(key3);
+                bool flagForKey3 = missionScreen.InputManager.IsAltDown() && missionScreen.InputManager.IsKeyPressed(key4);
 
                 if (flag3ForKeyF1) 
 				{
@@ -1798,11 +1800,11 @@ namespace Bodyguards
 
                                 this.CreatePlayerBodyguards();
                                 this.CreatePlayerBodyguards2();
-                                //this.CreateCaptainBodyguards(0, this._bodyguardFormation3, agents, this._selectTroops3);
-                                //this.CreateCaptainBodyguards2(1, this._bodyguardFormation4, agents, this._selectTroops4);
+                                this.CreateCaptainBodyguards(0, this._bodyguardFormation3, agents, this._selectTroops3);
+                                this.CreateCaptainBodyguards2(1, this._bodyguardFormation4, agents, this._selectTroops4);
                             }
 
-                            if (flagForKey1)
+/*                            if (flagForKey1)
                             {
                                 //this.ReleaseCaptainBodyguards(this._bodyguardFormation3);
                                 //this.ReleaseCaptainBodyguards2(this._bodyguardFormation4);
@@ -1838,7 +1840,48 @@ namespace Bodyguards
                                 }
 
                             }
+*/
+                            if (flagForKey2)
+                            {
+                                if (this.GetCaptainBodyguardCount() > 0)
+                                {
+                                    this.ReleaseCaptainBodyguards(null);
 
+                                }
+                                else
+                                {
+                                    this.CreateCaptainBodyguards(0, this._bodyguardFormation3, agents, this._selectTroops3);
+                                    InformationManager.DisplayMessage(new InformationMessage("Creating a bodyguard detail of " + this.GetCaptainBodyguardCount().ToString() + " soldiers.", Colors.Green));
+                                }
+                            }
+
+                            if (flagForKey3)
+                            {
+                                if (this.GetCaptainBodyguardCount2() > 0)
+                                {
+                                    this.ReleaseCaptainBodyguards2(null);
+
+                                }
+                                else
+                                {
+                                    this.CreateCaptainBodyguards(0, this._bodyguardFormation4, agents, this._selectTroops4);
+                                    InformationManager.DisplayMessage(new InformationMessage("Creating a bodyguard detail of " + this.GetCaptainBodyguardCount().ToString() + " soldiers.", Colors.Green));
+                                }
+                            }
+
+                            if (flagForKey1)
+                            {
+                                if (this.GetCaptainBodyguardCount3() > 0)
+                                {
+                                    this.ReleaseCaptainBodyguards3(null);
+
+                                }
+                                else
+                                {
+                                    this.CreateNonControllableCaptainBodyguards3(2, this._bodyguardFormation5, agents, this._selectTroops5);
+                                    InformationManager.DisplayMessage(new InformationMessage("Creating a bodyguard detail of " + this.GetCaptainBodyguardCount().ToString() + " soldiers.", Colors.Green));
+                                }
+                            }
 
                             if (flagForKeyH)
                             {
