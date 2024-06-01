@@ -2,13 +2,20 @@ import time
 
 import psutil
 import pyautogui
-import pydirectinput as pydirectinput
+
+pyautogui.FAILSAFE = False
+import pydirectinput
+
+pydirectinput.FAILSAFE = False
 import pyperclip
 import win32api
 import win32gui  # pip install pywin32
 import win32process
 import win32con
 import time
+import mouse
+import keyboard
+from pynput.keyboard import Key, Controller
 
 from pywinauto import Application
 
@@ -67,29 +74,74 @@ def revive():
             pass
 
 
+def face_to_waypoint(x, y, new_x, new_y, steps=10):
+    x_diff = new_x - x
+    y_diff = new_y - y
+    print(x, y)
+    print(new_x, new_y)
+    print("diffs", x_diff, y_diff)
+    print("target position: ", new_x, new_y)
+
+    mouse.move(x, y, absolute=True, duration=1)
+    keyboard = Controller()
+    keyboard.press(Key.alt_l)
+    keyboard.release(Key.alt_l)
+    time.sleep(5)
+
+    current_x, current_y = pydirectinput.position()
+    print("current pos", x, y)
+    print("current pydirection pos", current_x, current_y)
+
+    # Calculate the step size for each movement
+    step_x = x_diff / steps  # You can adjust the number of steps
+    step_y = y_diff / steps
+
+    # Perform a series of small mouse movements to reach the target location
+    for _ in range(steps):
+        current_x += step_x
+        current_y += step_y
+        pydirectinput.moveTo(int(current_x / 7), int(current_y / 7))
+        time.sleep(0.5)
+
+    print("new position: ", pydirectinput.position())
+    keyboard.press(Key.alt_l)
+    keyboard.release(Key.alt_l)
+    print("new position: ", pyautogui.position())
+
+
 def track_waypoint():
+    button_location = None
     while True:
         try:
             button_location = pyautogui.locateCenterOnScreen("images/waypoint.JPG", confidence=0.7, grayscale=True)
             print('Found it!')
             print(pyautogui.size())
-            print(pyautogui.position())
             print(button_location[0], button_location[1])
             time.sleep(1)
-            pydirectinput.moveTo(520, 380)
-
-            # pydirectinput.mouseDown(x=520, y=380, button='right')
-            pydirectinput.moveTo(button_location[0], button_location[1], 5)
-            # pydirectinput.mouseUp(x=520, y=380, button='right')
-
-            # pyautogui.mouseDown(x=1413, y=676, button='right')
-            # pyautogui.mouseUp(x=1413, y=676, button='right')
-            # pyautogui.mouseDown(x=1413, y=676, button='left')
-            # time.sleep(1)
-            # pyautogui.mouseUp(x=1413, y=676, button='left')
             break
-        except:
+        except Exception as e:
+            print(f"An error occurred: {e}")
             pass
+    if button_location is not None:
+        face_to_waypoint(330, 240, button_location[0], button_location[1])
+    else:
+        print("Button not found.")
+
+
+def move_to_waypoint():
+    keyboard = Controller()
+    keyboard.press(Key.alt_l)
+    keyboard.release(Key.alt_l)
+
+
+    keyboard.press('w')
+    while pyautogui.locateCenterOnScreen("images/waypoint.JPG", confidence=0.5, grayscale=True) is not None:
+        time.sleep(0.5)
+
+    keyboard.release('w')
+
+    keyboard.press(Key.alt_l)
+    keyboard.release(Key.alt_l)
 
 
 def get_waypoint(waypoint):
@@ -128,25 +180,11 @@ def main():
         app = Application().connect(process=pid)
         app.top_window().set_focus()
     # revive()
-    time.sleep(5)
-    # track_waypoint()
-    # Move the mouse to the specified position
-    win32api.SetCursorPos((520, 380))
-
-    # Click the left mouse button at the current mouse position
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-
-    # Release the left mouse button
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-
-    # Drag the mouse to the new position
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-    win32api.SetCursorPos((600, 380))
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-    # move()
+    time.sleep(2)
+    track_waypoint()
+    move_to_waypoint()
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
 
