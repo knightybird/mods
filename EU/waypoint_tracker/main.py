@@ -133,12 +133,27 @@ def move_to_waypoint():
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
 
+    key_pressed = False
+    while True:
+        try:
+            waypoint_position = pyautogui.locateCenterOnScreen("images/waypoint.JPG", confidence=0.5, grayscale=True)
+            time.sleep(0.5)
 
-    keyboard.press('w')
-    while pyautogui.locateCenterOnScreen("images/waypoint.JPG", confidence=0.5, grayscale=True) is not None:
-        time.sleep(0.5)
+            if waypoint_position is not None:
+                if not key_pressed:
+                    keyboard.press('w')
+                    key_pressed = True
+            elif key_pressed:
+                keyboard.release('w')
+                key_pressed = False
+            else:
+                break
 
-    keyboard.release('w')
+        except pyautogui.ImageNotFoundException:
+            if key_pressed:
+                keyboard.release('w')
+                key_pressed = False
+            break
 
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
