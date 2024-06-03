@@ -1,0 +1,1 @@
+Build with pyinstaller and run as an executable as part of an app.

@@ -34,6 +34,13 @@ def get_process_id(name):
     return None
 
 
+def get_pid():
+    pid = get_process_id("Entropia.exe")
+    if pid is not None:
+        app = Application().connect(process=pid)
+        app.top_window().set_focus()
+
+
 def set_window_focus(pid):
     """
     Brings the window with the specified process ID to the foreground.
@@ -64,7 +71,7 @@ def revive():
     t_end = time.time() + 3
     while time.time() < t_end:
         try:
-            x, y = pyautogui.locateCenterOnScreen("images/revive-button.JPG", confidence=0.8, grayscale=True)
+            x, y = pyautogui.locateCenterOnScreen("images/revive-button.jpg", confidence=0.8, grayscale=True)
             time.sleep(1)
             pydirectinput.mouseDown(x, y)
             pydirectinput.mouseUp(x, y)
@@ -77,16 +84,13 @@ def revive():
 def face_to_waypoint(x, y, new_x, new_y, steps=10):
     x_diff = new_x - x
     y_diff = new_y - y
-    print(x, y)
-    print(new_x, new_y)
-    print("diffs", x_diff, y_diff)
     print("target position: ", new_x, new_y)
 
-    mouse.move(x, y, absolute=True, duration=1)
+    mouse.move(x, y, absolute=True)
     keyboard = Controller()
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
-    time.sleep(5)
+    # time.sleep(5)
 
     current_x, current_y = pydirectinput.position()
     print("current pos", x, y)
@@ -109,18 +113,18 @@ def face_to_waypoint(x, y, new_x, new_y, steps=10):
     print("new position: ", pyautogui.position())
 
 
-def track_waypoint():
+def track_waypoint(waypoint_image):
     button_location = None
     while True:
         try:
-            button_location = pyautogui.locateCenterOnScreen("images/waypoint.JPG", confidence=0.7, grayscale=True)
+            button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=0.5, grayscale=True)
             print('Found it!')
             print(pyautogui.size())
             print(button_location[0], button_location[1])
             time.sleep(1)
             break
         except Exception as e:
-            print(f"An error occurred: {e}")
+            # print(f"An error occurred: {e}")
             pass
     if button_location is not None:
         face_to_waypoint(330, 240, button_location[0], button_location[1])
@@ -128,57 +132,90 @@ def track_waypoint():
         print("Button not found.")
 
 
-def move_to_waypoint():
+def move_to_waypoint(waypoint_image, delay=5):
     keyboard = Controller()
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
 
+    wait_time = delay
+    search_time = 0.1
+    last_found_time = time.time()  # current time
     key_pressed = False
+    active_state = True
     while True:
         try:
-            waypoint_position = pyautogui.locateCenterOnScreen("images/waypoint.JPG", confidence=0.5, grayscale=True)
-            time.sleep(0.5)
+            waypoint_position = pyautogui.locateCenterOnScreen(waypoint_image, confidence=0.5, grayscale=True)
+            time.sleep(search_time)
 
             if waypoint_position is not None:
                 if not key_pressed:
                     keyboard.press('w')
                     key_pressed = True
+                last_found_time = time.time()  # Updates the last found time
+
             elif key_pressed:
                 keyboard.release('w')
                 key_pressed = False
+
             else:
-                break
+                # If image not found and button released, then
+                # Switch to inactive state if image not found since x seconds
+                if time.time() - last_found_time >= wait_time:
+                    active_state = False
+
+                continue
 
         except pyautogui.ImageNotFoundException:
-            if key_pressed:
+
+            keyboard.release('w')  # Release the 'w' key immediately
+            key_pressed = False
+
+            if active_state:
+                continue
+
+            else:
+                # Stay in inactive state until the image is found
                 keyboard.release('w')
-                key_pressed = False
-            break
+                search_time = wait_time
+                continue
 
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
 
 
-def get_waypoint(waypoint):
+def get_waypoint(waypoints_txt):
     print(pyautogui.size())
-    with open("notepad.txt") as f:
+    with open(waypoints_txt) as f:
         text = f.read()
 
     # Copy the text to the clipboard
     print(text)
     pyperclip.copy(text)
 
+
+def paste():
+    pyautogui.typewrite(pyperclip.paste(), interval=0.001)
+
+
+def paste_waypoint():
+    try:
+        pyautogui.moveTo(100, 470)
+        pyautogui.click()
+    except:
+        pass
     # Move the mouse to the location of the text field
-    pyautogui.moveTo(1900, 900)
 
     # Simulate a left-click to select the text field
-    pyautogui.click()
-    pyautogui.PAUSE = 1.0
-    pyautogui.hotkey('enter')
-    time.sleep(1)
-    pyautogui.typewrite(pyperclip.paste())
-    pyautogui.PAUSE = 1.0
-    pyautogui.hotkey('enter')
+    keyboard2 = Controller()
+    keyboard2.tap(Key.enter)
+    time.sleep(0.5)
+
+    paste()
+    # pyautogui.PAUSE = 1.0
+    # pyautogui.typewrite(pyperclip.paste())
+    # pyautogui.PAUSE = 1.0
+
+    keyboard2.tap(Key.enter)
 
 
 def move():
@@ -187,17 +224,20 @@ def move():
     pydirectinput.mouseUp(button='right')
 
 
-def main():
-    pid = get_process_id("Entropia.exe")
-    set_window_focus(pid)
+def toggle_hud():
+    time.sleep(1)
+    keyboard = Controller()
+    keyboard.press(Key.f1)
+    keyboard.release(Key.f1)
+    time.sleep(1)
 
-    if pid is not None:
-        app = Application().connect(process=pid)
-        app.top_window().set_focus()
-    # revive()
-    time.sleep(2)
-    track_waypoint()
-    move_to_waypoint()
+
+def main():
+    set_window_focus(get_pid())
+    time.sleep(1)
+    waypoint_image = "images/waypoint.jpg"
+    track_waypoint(waypoint_image)
+    move_to_waypoint(waypoint_image)
 
 
 if __name__ == '__main__':
