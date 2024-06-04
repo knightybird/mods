@@ -1,1 +1,4 @@
 /wp [Ancient Greece, 35675, 19277, 141, Waypoint]
+/wp [Ancient Greece, 35632, 19234, 144, Waypoint]
+/wp [Ancient Greece, 35563, 19188, 142, Waypoint]
+/wp [Ancient Greece, 35663, 19248, 144, Waypoint]

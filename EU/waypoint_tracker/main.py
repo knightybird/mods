@@ -81,16 +81,18 @@ def revive():
             pass
 
 
-def face_to_waypoint(x, y, new_x, new_y, steps=10):
+def face_to_waypoint(x, y, new_x, new_y, steps=12):
     x_diff = new_x - x
     y_diff = new_y - y
     print("target position: ", new_x, new_y)
+
+    time.sleep(2)
 
     mouse.move(x, y, absolute=True)
     keyboard = Controller()
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
-    # time.sleep(5)
+    time.sleep(3)
 
     current_x, current_y = pydirectinput.position()
     print("current pos", x, y)
@@ -105,7 +107,7 @@ def face_to_waypoint(x, y, new_x, new_y, steps=10):
         current_x += step_x
         current_y += step_y
         pydirectinput.moveTo(int(current_x / 7), int(current_y / 7))
-        time.sleep(0.5)
+        time.sleep(0.01)
 
     print("new position: ", pydirectinput.position())
     keyboard.press(Key.alt_l)
@@ -183,14 +185,79 @@ def move_to_waypoint(waypoint_image, delay=5):
     keyboard.release(Key.alt_l)
 
 
-def get_waypoint(waypoints_txt):
-    print(pyautogui.size())
-    with open(waypoints_txt) as f:
-        text = f.read()
+def move_to_tracked_waypoint(waypoint_image, waypoint_text, delay=5):
+    # keyboard = Controller()
+    # keyboard.press(Key.alt_l)
+    # keyboard.release(Key.alt_l)
 
-    # Copy the text to the clipboard
-    print(text)
-    pyperclip.copy(text)
+    wait_time = delay
+    search_time = 0.1
+    last_found_time = time.time()  # current time
+    is_moving = False
+    active_state = True
+    stop_count = 0
+    total_moves = 0
+
+    while True:
+        try:
+            button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=0.5, grayscale=True)
+            time.sleep(search_time)
+
+            if button_location is not None:
+
+                if not is_moving:
+                    face_to_waypoint(330, 200, button_location[0], button_location[1])
+
+                    time.sleep(1)  # Wait x seconds before moving
+                    is_moving = True
+                    keyboard.press('w')
+                last_found_time = time.time()  # Updates the last found time
+
+            else:
+                if is_moving:
+                    is_moving = False
+                    keyboard.release('w')
+
+                else:
+                    # If image not found and button released, then
+                    # Switch to inactive state if image not found since x seconds
+                    if time.time() - last_found_time >= wait_time:
+                        active_state = False
+
+                    continue
+
+        except pyautogui.ImageNotFoundException:
+
+            if is_moving:
+                keyboard.release('w')  # Release the 'w' key immediately
+                is_moving = False
+
+            if active_state:
+                continue
+
+            else:
+                # Stay in inactive state until the image is found
+                keyboard.release('w')
+                search_time = wait_time
+                continue
+
+    # keyboard.press(Key.alt_l)
+    # keyboard.release(Key.alt_l)
+
+
+def get_waypoint(waypoints_txt, index):
+
+    with open('wp_sparta.txt', 'r') as file:
+        # for i, line in enumerate(file):
+        #     print(f"Line {i + 1}: {line.strip()}")
+        #     text = line.strip()
+        #     pyperclip.copy(text)
+
+        lines = file.readlines()
+        print(len(lines))
+        print(lines[2].strip())
+
+
 
 
 def paste():
