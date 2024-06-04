@@ -2,14 +2,9 @@ from main import *
 
 
 def main():
-    # set_window_focus(get_pid())
-
-    waypoints = "wp_sparta.txt"
-
-
-    print(get_waypoint(waypoints, 2))
+    set_window_focus(get_pid())
     waypoint_image = "images/waypoint.jpg"
-    move_to_tracked_waypoint(waypoint_image, waypoints)
+    move_to_tracked_waypoint(waypoint_image)
 
 
 if __name__ == '__main__':

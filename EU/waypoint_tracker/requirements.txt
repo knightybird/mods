@@ -1,5 +1,7 @@
 psutil~=5.9.8
-PyAutoGUI~=0.9.54
+PyAutoGUI
 pyperclip~=1.8.2
 pywinauto~=0.6.8
+keyboard
 opencv-python
+pydirectinput_rgx

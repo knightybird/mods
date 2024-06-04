@@ -82,37 +82,52 @@ def revive():
 
 
 def face_to_waypoint(x, y, new_x, new_y, steps=12):
-    x_diff = new_x - x
-    y_diff = new_y - y
+    print("crosshair pos", x, y)
     print("target position: ", new_x, new_y)
 
-    time.sleep(2)
+    current_x, current_y = pydirectinput.position()
+    crosshair_x = x
+    crosshair_y = y
+    # Calculate the difference between the current and target positions
+    dx, dy = crosshair_x - current_x, crosshair_y - current_y
+    for _ in range(steps):
+        pydirectinput.move(int(dx / steps), int(dy / steps))
+        print("pyautogui pos", pyautogui.position())
 
-    mouse.move(x, y, absolute=True)
+        time.sleep(0.01)
+
+    # mouse.move(x, y, absolute=True)
+
+
+    current_x, current_y = pyautogui.position()
+    print("current pydirection pos", current_x, current_y)
+
+    x_diff = new_x - current_x
+    y_diff = new_y - current_y
+    print("dx, dy: ", x_diff, y_diff)
+
+    step_x = x_diff / steps  # You can adjust the number of steps
+    step_y = y_diff / steps
+    print("step x, y: ", int(step_x), int(step_y))
+    # Perform a series of small mouse movements to reach the target location
+
     keyboard = Controller()
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
     time.sleep(3)
-
-    current_x, current_y = pydirectinput.position()
-    print("current pos", x, y)
-    print("current pydirection pos", current_x, current_y)
-
-    # Calculate the step size for each movement
-    step_x = x_diff / steps  # You can adjust the number of steps
-    step_y = y_diff / steps
-
     # Perform a series of small mouse movements to reach the target location
     for _ in range(steps):
-        current_x += step_x
-        current_y += step_y
-        pydirectinput.moveTo(int(current_x / 7), int(current_y / 7))
-        time.sleep(0.01)
+        # current_x += step_x
+        # current_y += step_y
+        pydirectinput.moveRel(xOffset=int(step_x*12), yOffset=int(step_y*12), relative=True, disable_mouse_acceleration=True)
+        # pydirectinput.moveTo(int(current_x / 7), int(current_y / 7))
+        print("pydirection pos", pyautogui.position())
+        time.sleep(0.1)
 
-    print("new position: ", pydirectinput.position())
+    # print("new position: ", pydirectinput.position())
+    # print("new position: ", mouse.get_position())
     keyboard.press(Key.alt_l)
     keyboard.release(Key.alt_l)
-    print("new position: ", pyautogui.position())
 
 
 def track_waypoint(waypoint_image):
@@ -129,7 +144,7 @@ def track_waypoint(waypoint_image):
             # print(f"An error occurred: {e}")
             pass
     if button_location is not None:
-        face_to_waypoint(330, 240, button_location[0], button_location[1])
+        face_to_waypoint(324, 250, button_location[0], button_location[1])
     else:
         print("Button not found.")
 
@@ -185,7 +200,7 @@ def move_to_waypoint(waypoint_image, delay=5):
     keyboard.release(Key.alt_l)
 
 
-def move_to_tracked_waypoint(waypoint_image, waypoint_text, delay=5):
+def move_to_tracked_waypoint(waypoint_image, delay=5):
     # keyboard = Controller()
     # keyboard.press(Key.alt_l)
     # keyboard.release(Key.alt_l)
@@ -195,8 +210,6 @@ def move_to_tracked_waypoint(waypoint_image, waypoint_text, delay=5):
     last_found_time = time.time()  # current time
     is_moving = False
     active_state = True
-    stop_count = 0
-    total_moves = 0
 
     while True:
         try:
@@ -206,7 +219,7 @@ def move_to_tracked_waypoint(waypoint_image, waypoint_text, delay=5):
             if button_location is not None:
 
                 if not is_moving:
-                    face_to_waypoint(330, 200, button_location[0], button_location[1])
+                    face_to_waypoint(324, 250, button_location[0], button_location[1])
 
                     time.sleep(1)  # Wait x seconds before moving
                     is_moving = True
@@ -246,7 +259,6 @@ def move_to_tracked_waypoint(waypoint_image, waypoint_text, delay=5):
 
 
 def get_waypoint(waypoints_txt, index):
-
     with open('wp_sparta.txt', 'r') as file:
         # for i, line in enumerate(file):
         #     print(f"Line {i + 1}: {line.strip()}")
@@ -256,8 +268,6 @@ def get_waypoint(waypoints_txt, index):
         lines = file.readlines()
         print(len(lines))
         print(lines[2].strip())
-
-
 
 
 def paste():
@@ -286,9 +296,9 @@ def paste_waypoint():
 
 
 def move():
-    pydirectinput.mouseDown(button='right')
+    pyautogui.mouseDown(button='right')
     time.sleep(1)
-    pydirectinput.mouseUp(button='right')
+    pyautogui.mouseUp(button='right')
 
 
 def toggle_hud():
