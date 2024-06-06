@@ -60,82 +60,73 @@ def set_window_focus(pid):
     win32gui.EnumWindows(enum_windows_callback, None)
 
 
-def face_to_waypoint(x, y, new_x, new_y, steps=12):
-    print("crosshair pos", x, y)
-    print("target position: ", new_x, new_y)
-
-    # current_x, current_y = pydirectinput.position()
-    # crosshair_x = x
-    # crosshair_y = y
-    # # Calculate the difference between the current and target positions
-    # dx, dy = crosshair_x - current_x, crosshair_y - current_y
-    # for _ in range(steps):
-    #     pydirectinput.move(int(dx / steps), int(dy / steps))
-    #     print("pyautogui pos", pyautogui.position())
-    #
-    #     time.sleep(0.01)
-
-    mouse.move(x, y, absolute=True)
-
+def face_to_waypoint(new_x, new_y, steps=12):
     current_x, current_y = pyautogui.position()
-    print("current pydirection pos", current_x, current_y)
-
     x_diff = new_x - current_x
     y_diff = new_y - current_y
-    print("dx, dy: ", x_diff, y_diff)
-
     step_x = x_diff / steps  # You can adjust the number of steps
     step_y = y_diff / steps
-    print("step x, y: ", int(step_x), int(step_y))
-    # Perform a series of small mouse movements to reach the target location
 
-    keyboard = Controller()
-    keyboard.press(Key.alt_l)
-    keyboard.release(Key.alt_l)
-    time.sleep(3)
     # Perform a series of small mouse movements to reach the target location
     for _ in range(steps):
-        # current_x += step_x
-        # current_y += step_y
         pydirectinput.moveRel(xOffset=int(step_x * 12), yOffset=int(step_y * 12), relative=True,
                               disable_mouse_acceleration=True)
-        # pydirectinput.moveTo(int(current_x / 7), int(current_y / 7))
         print("pydirection pos", pyautogui.position())
         time.sleep(0.1)
 
-    # print("new position: ", pydirectinput.position())
-    # print("new position: ", mouse.get_position())
-    keyboard.press(Key.alt_l)
-    keyboard.release(Key.alt_l)
-    time.sleep(1)
 
-
-def move_to_tracked_waypoint(waypoint_image, delay=5):
+def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, delay=5):
     wait_time = delay
     search_time = 0.1
+    elapsed_time = 0
+    start_time = time.time()
     last_found_time = time.time()  # current time
     is_moving = False
     active_state = True
+    is_alt = False
+
+    keyboard = Controller()
 
     while True:
         try:
-            button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=0.5, grayscale=True)
             time.sleep(search_time)
+            button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=0.5, grayscale=True)
 
             if button_location is not None:
+                elapsed_time = time.time() - start_time
 
                 if not is_moving:
-                    face_to_waypoint(324, 250, button_location[0], button_location[1])
+                    # mouse.move(crosshair_x, crosshair_y, absolute=True)
+                    keyboard.press(Key.alt_l)
+                    keyboard.release(Key.alt_l)
+                    is_alt = True
+                    time.sleep(3)
 
-                    time.sleep(1)  # Wait x seconds before moving
-                    is_moving = True
                     keyboard.press('w')
-                last_found_time = time.time()  # Updates the last found time
+                    is_moving = True
+                    time.sleep(0.5)
+
+                if elapsed_time >= 3:
+                    mouse.move(crosshair_x, crosshair_y, absolute=True)
+
+                    start_time = time.time()
+                    elapsed_time = 0
+                    face_to_waypoint(button_location[0], button_location[1])
+                    time.sleep(0.5)  # Wait x seconds before moving
+
+                last_found_time = time.time()  # Resets the last found time
 
             else:
+                elapsed_time = 0
                 if is_moving:
                     is_moving = False
                     keyboard.release('w')
+                    time.sleep(0.5)
+                    if is_alt:
+                        keyboard.press(Key.alt_l)
+                        keyboard.release(Key.alt_l)
+                        is_alt = False
+                        time.sleep(1)
 
                 else:
                     # If image not found and button released, then
@@ -149,11 +140,16 @@ def move_to_tracked_waypoint(waypoint_image, delay=5):
 
             if is_moving:
                 keyboard.release('w')  # Release the 'w' key immediately
+                time.sleep(0.5)
                 is_moving = False
+                if is_alt:
+                    keyboard.press(Key.alt_l)
+                    keyboard.release(Key.alt_l)
+                    is_alt = False
+                    time.sleep(1)
 
             if active_state:
                 continue
-
             else:
                 # Stay in inactive state until the image is found
                 keyboard.release('w')
@@ -162,9 +158,10 @@ def move_to_tracked_waypoint(waypoint_image, delay=5):
 
 
 def main():
+    print(pyautogui.size())
     set_window_focus(get_pid())
     waypoint_image = "images/waypoint.jpg"
-    move_to_tracked_waypoint(waypoint_image)
+    move_to_tracked_waypoint(waypoint_image, 324, 250)
 
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@ import os
 
 filename = "waypoint.py"
 base_name, ext = os.path.splitext(filename)
+exe_list_index = 3  # The line number where the exe list starts in setup.py
 
 i = 1
 for n in range(20):
@@ -19,3 +20,14 @@ for n in range(20):
         f.write(content)
 
     print(f"Created duplicate file: {new_filename}")
+
+    # Update setup.py
+    # Append the new file to the exe list in setup.py
+    with open("setup.py", "r") as setup_file:
+        lines = setup_file.readlines()
+
+    exe_line = f"    Executable(\"{new_filename}\", base=\"Win32GUI\"),\n"
+    lines.insert(exe_list_index, exe_line)
+
+    with open("setup.py", "w") as setup_file:
+        setup_file.writelines(lines)

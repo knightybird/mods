@@ -1,3 +1,7 @@
 **waypoint-*.py
 **dist
 **build
+
+
+# Ignore other changes to setup.py
+setup.py
