@@ -71,95 +71,101 @@ def face_to_waypoint(new_x, new_y, steps=12):
     for _ in range(steps):
         pydirectinput.moveRel(xOffset=int(step_x * 12), yOffset=int(step_y * 12), relative=True,
                               disable_mouse_acceleration=True)
-        print("pydirection pos", pyautogui.position())
+        # print("pydirection pos", pyautogui.position())
         time.sleep(0.1)
 
 
-def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, delay=5):
-    wait_time = delay
-    search_time = 0.1
-    elapsed_time = 0
+def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.5, delay_t=5):
+    wait_time = delay_t
     start_time = time.time()
     last_found_time = time.time()  # current time
     is_moving = False
-    active_state = True
+    active = True
     is_alt = False
+    previous_button_location = None
 
     keyboard = Controller()
 
     while True:
         try:
-            time.sleep(search_time)
-            button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=0.5, grayscale=True)
+            search_time = search_t if active else delay_t
+            elapsed_time = 1 if active else time.time() - start_time
+            confidence = 0.4 if not active and elapsed_time < 8 else 0.5
 
+            button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=confidence, grayscale=True,
+                                                             region=(0, 0, 650, 400))
             if button_location is not None:
-                elapsed_time = time.time() - start_time
+                active = True
 
-                if not is_moving:
+                if not is_moving and not is_alt:
                     # mouse.move(crosshair_x, crosshair_y, absolute=True)
                     keyboard.press(Key.alt_l)
                     keyboard.release(Key.alt_l)
                     is_alt = True
                     time.sleep(3)
 
-                    keyboard.press('w')
-                    is_moving = True
-                    time.sleep(0.5)
+                if previous_button_location is not None:
+                    if not is_moving and max(abs(previous_button_location[0] - button_location[0]),
+                                             abs(previous_button_location[1] - button_location[1])) <= 50:
+                        keyboard.press('w')
+                        is_moving = True
 
-                if elapsed_time >= 3:
+                    elif is_moving:
+
+                        keyboard.release('w')
+                        is_moving = False
+                        time.sleep(0.2)
+                # if previous_button_location is not None:
+                #     # Check if the new button location significantly differs from the previous one
+                #     if is_moving and previous_button_location and max(
+                #             abs(previous_button_location[0] - button_location[0]),
+                #             abs(previous_button_location[1] - button_location[1])) >= 50:
+                #
+                #         keyboard.release('w')
+                #         is_moving = False
+                #         time.sleep(0.2)
+                #
+                #     elif not is_moving:
+                #         keyboard.press('w')
+                #         is_moving = True
+
+                if elapsed_time >= 1:  # track image with  x seconds when not active
                     mouse.move(crosshair_x, crosshair_y, absolute=True)
 
                     start_time = time.time()
-                    elapsed_time = 0
                     face_to_waypoint(button_location[0], button_location[1])
-                    time.sleep(0.5)  # Wait x seconds before moving
 
                 last_found_time = time.time()  # Resets the last found time
 
-            else:
-                elapsed_time = 0
-                if is_moving:
-                    is_moving = False
-                    keyboard.release('w')
-                    time.sleep(0.5)
-                    if is_alt:
-                        keyboard.press(Key.alt_l)
-                        keyboard.release(Key.alt_l)
-                        is_alt = False
-                        time.sleep(1)
-
-                else:
-                    # If image not found and button released, then
-                    # Switch to inactive state if image not found since x seconds
-                    if time.time() - last_found_time >= wait_time:
-                        active_state = False
-
-                    continue
+                previous_button_location = button_location  # Update previous_button_location
+                button_location = None
+                continue
 
         except pyautogui.ImageNotFoundException:
 
             if is_moving:
                 keyboard.release('w')  # Release the 'w' key immediately
-                time.sleep(0.5)
                 is_moving = False
+                time.sleep(0.1)
                 if is_alt:
+                    time.sleep(0.4)
                     keyboard.press(Key.alt_l)
                     keyboard.release(Key.alt_l)
                     is_alt = False
-                    time.sleep(1)
+                    time.sleep(0.5)
 
-            if active_state:
+            if active:
+                if time.time() - last_found_time >= wait_time:
+                    active = False
                 continue
             else:
                 # Stay in inactive state until the image is found
-                keyboard.release('w')
-                search_time = wait_time
                 continue
 
 
 def main():
-    print(pyautogui.size())
     set_window_focus(get_pid())
+    print(pyautogui.size())
     waypoint_image = "images/waypoint.jpg"
     move_to_tracked_waypoint(waypoint_image, 324, 250)
 
