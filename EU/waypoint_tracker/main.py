@@ -90,7 +90,7 @@ def on_press(key):
         print(f'Loop is {"paused" if is_paused else "resumed"}')
 
 
-def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.5, delay_t=5):
+def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.2, delay_t=5):
     wait_time = delay_t
     start_time = time.time()
     last_found_time = time.time()  # current time
@@ -112,7 +112,7 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
                 confidence = 0.4 if not active and elapsed_time < 8 else 0.5
 
                 button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=confidence, grayscale=True,
-                                                                 region=(0, 0, 650, 400))
+                                                                 region=(0, 0, 650, 459))
                 if button_location is not None:
                     active = True
 
@@ -140,6 +140,7 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
                         mouse.move(crosshair_x, crosshair_y, absolute=True)
 
                         start_time = time.time()
+                        elapsed_time = 0
                         face_to_waypoint(button_location[0], button_location[1])
 
                     last_found_time = time.time()  # Resets the last found time
