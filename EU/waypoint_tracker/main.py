@@ -60,7 +60,7 @@ def set_window_focus(pid):
     win32gui.EnumWindows(enum_windows_callback, None)
 
 
-def face_to_waypoint(new_x, new_y, steps=12):
+def face_to_waypoint(new_x, new_y, steps=12, sensitivity=12):
     current_x, current_y = pyautogui.position()
     x_diff = new_x - current_x
     y_diff = new_y - current_y
@@ -69,7 +69,7 @@ def face_to_waypoint(new_x, new_y, steps=12):
 
     # Perform a series of small mouse movements to reach the target location
     for _ in range(steps):
-        pydirectinput.moveRel(xOffset=int(step_x * 12), yOffset=int(step_y * 12), relative=True,
+        pydirectinput.moveRel(xOffset=int(step_x * sensitivity), yOffset=int(step_y * sensitivity), relative=True,
                               disable_mouse_acceleration=True)
         # print("pydirection pos", pyautogui.position())
         time.sleep(0.1)
@@ -77,12 +77,13 @@ def face_to_waypoint(new_x, new_y, steps=12):
 
 is_paused = False
 
-'''
-pynput keyboard listener function.
-'''
-
 
 def on_press(key):
+    """
+    pynput - keyboard listener function.
+
+    :param key:
+    """
     # nonlocal is_paused
     global is_paused
     if key == Key.f2:
@@ -90,7 +91,7 @@ def on_press(key):
         print(f'Loop is {"paused" if is_paused else "resumed"}')
 
 
-def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.2, delay_t=5):
+def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.1, delay_t=5):
     wait_time = delay_t
     start_time = time.time()
     last_found_time = time.time()  # current time
@@ -124,45 +125,54 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
                         time.sleep(3)
 
                     if previous_button_location is not None:
-                        if not is_moving and max(abs(previous_button_location[0] - button_location[0]),
-                                                 abs(previous_button_location[1] - button_location[1])) <= 50:
+                        mouse.move(crosshair_x, crosshair_y, absolute=True)
+
+                        xy_diff = max(abs(previous_button_location[0] - button_location[0]),
+                                      abs(previous_button_location[1] - button_location[1]))
+
+                        if xy_diff > 60:
+                            keyboard.release('w')  # quick fix
+
+                        if not is_moving and xy_diff <= 50:
                             keyboard.press('w')
                             is_moving = True
 
-                        elif is_moving and max(abs(previous_button_location[0] - button_location[0]),
-                                               abs(previous_button_location[1] - button_location[1])) >= 50:
-
+                        elif is_moving and xy_diff >= 60:
                             keyboard.release('w')
                             is_moving = False
                             time.sleep(0.2)
 
-                    if elapsed_time >= 1:  # track image with  x seconds when not active
-                        mouse.move(crosshair_x, crosshair_y, absolute=True)
+                        face_to_waypoint(button_location[0], button_location[1])
 
+                    if elapsed_time >= 1:  # track image with  x seconds when not active
                         start_time = time.time()
                         elapsed_time = 0
-                        face_to_waypoint(button_location[0], button_location[1])
 
                     last_found_time = time.time()  # Resets the last found time
 
                     previous_button_location = button_location  # Update previous_button_location
                     button_location = None
+
+                    time.sleep(search_time)
                     continue
 
             except pyautogui.ImageNotFoundException:
 
+                keyboard.release('w')  # Release the 'w' key immediately
+                time.sleep(0.1)
+
                 if is_moving:
-                    keyboard.release('w')  # Release the 'w' key immediately
+                    keyboard.release('w')
                     is_moving = False
                     time.sleep(0.1)
                     if is_alt:
-                        time.sleep(0.4)
+                        # time.sleep(0.4)
                         keyboard.press(Key.alt_l)
                         keyboard.release(Key.alt_l)
                         is_alt = False
-                        time.sleep(0.5)
+                        # time.sleep(0.5)
 
-                if active:
+                elif active:
                     if time.time() - last_found_time >= wait_time:
                         active = False
                     continue
