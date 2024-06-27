@@ -91,7 +91,7 @@ def on_press(key):
         print(f'Loop is {"paused" if is_paused else "resumed"}')
 
 
-def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.1, delay_t=5):
+def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.0, delay_t=5):
     wait_time = delay_t
     start_time = time.time()
     last_found_time = time.time()  # current time
@@ -132,6 +132,8 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
 
                         if xy_diff > 60:
                             keyboard.release('w')  # quick fix
+                            is_moving = False
+                            # time.sleep(0.1)
 
                         if not is_moving and xy_diff <= 50:
                             keyboard.press('w')
@@ -140,7 +142,7 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
                         elif is_moving and xy_diff >= 60:
                             keyboard.release('w')
                             is_moving = False
-                            time.sleep(0.2)
+                            # time.sleep(0.2)
 
                         face_to_waypoint(button_location[0], button_location[1])
 
@@ -159,12 +161,12 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
             except pyautogui.ImageNotFoundException:
 
                 keyboard.release('w')  # Release the 'w' key immediately
-                time.sleep(0.1)
+                # time.sleep(0.1)
 
                 if is_moving:
                     keyboard.release('w')
                     is_moving = False
-                    time.sleep(0.1)
+                    # time.sleep(0.1)
                     if is_alt:
                         # time.sleep(0.4)
                         keyboard.press(Key.alt_l)
