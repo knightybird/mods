@@ -85,11 +85,17 @@ def on_press(key):
     :param key:
     """
     # nonlocal is_paused
-    global is_paused
+    global is_paused, is_alt
     if key == Key.f2:
         is_paused = not is_paused
         print(f'Loop is {"paused" if is_paused else "resumed"}')
-
+        if is_alt:
+            is_alt = False
+            time.sleep(0.4)
+            keyboard.press(Key.alt_l)
+            keyboard.release(Key.alt_l)
+            is_alt = False
+            time.sleep(0.1)
 
 def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.0, delay_t=5):
     wait_time = delay_t
@@ -98,7 +104,6 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
     is_moving = False
     active = True
     is_alt = False
-    previous_button_location = None
 
     keyboard = Controller()
     with Listener(on_press=on_press) as keyboard_listener:
@@ -124,27 +129,19 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
                         is_alt = True
                         time.sleep(3)
 
-                    if previous_button_location is not None:
-                        mouse.move(crosshair_x, crosshair_y, absolute=True)
+                    x_diff_to_centre = abs(crosshair_x - button_location[0])
+                    y_diff_to_centre = abs(crosshair_y - button_location[1])
+                    xy_diff_to_centre = max(abs(crosshair_x - button_location[0]),
+                                            abs(crosshair_y - button_location[1]))
 
-                        xy_diff = max(abs(previous_button_location[0] - button_location[0]),
-                                      abs(previous_button_location[1] - button_location[1]))
+                    if is_moving and x_diff_to_centre > 20:
+                        keyboard.release('w')
+                        is_moving = False
+                        time.sleep(0.1)
 
-                        if xy_diff > 60:
-                            keyboard.release('w')  # quick fix
-                            is_moving = False
-                            # time.sleep(0.1)
-
-                        if not is_moving and xy_diff <= 50:
-                            keyboard.press('w')
-                            is_moving = True
-
-                        elif is_moving and xy_diff >= 60:
-                            keyboard.release('w')
-                            is_moving = False
-                            # time.sleep(0.2)
-
-                        face_to_waypoint(button_location[0], button_location[1])
+                    elif not is_moving and x_diff_to_centre <= 20 or xy_diff_to_centre < 50:
+                        keyboard.press('w')
+                        is_moving = True
 
                     if elapsed_time >= 1:  # track image with  x seconds when not active
                         start_time = time.time()
@@ -152,27 +149,30 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
 
                     last_found_time = time.time()  # Resets the last found time
 
-                    previous_button_location = button_location  # Update previous_button_location
-                    button_location = None
+                    mouse.move(crosshair_x, crosshair_y, absolute=True)
+                    face_to_waypoint(button_location[0], button_location[1])
 
                     time.sleep(search_time)
                     continue
 
             except pyautogui.ImageNotFoundException:
 
+                if is_paused:
+                    time.sleep(5)
+                    continue
+
                 keyboard.release('w')  # Release the 'w' key immediately
-                # time.sleep(0.1)
 
                 if is_moving:
                     keyboard.release('w')
                     is_moving = False
-                    # time.sleep(0.1)
-                    if is_alt:
-                        # time.sleep(0.4)
-                        keyboard.press(Key.alt_l)
-                        keyboard.release(Key.alt_l)
-                        is_alt = False
-                        # time.sleep(0.5)
+                    time.sleep(0.1)
+                    # if is_alt:
+                    #     time.sleep(0.4)
+                    #     keyboard.press(Key.alt_l)
+                    #     keyboard.release(Key.alt_l)
+                    #     is_alt = False
+                    #     time.sleep(0.5)
 
                 elif active:
                     if time.time() - last_found_time >= wait_time:
