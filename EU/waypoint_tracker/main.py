@@ -64,18 +64,17 @@ def face_to_waypoint(new_x, new_y, steps=12, sensitivity=12):
     current_x, current_y = pyautogui.position()
     x_diff = new_x - current_x
     y_diff = new_y - current_y
-    step_x = x_diff / steps  # You can adjust the number of steps
+    step_x = x_diff / steps
     step_y = y_diff / steps
 
-    # Perform a series of small mouse movements to reach the target location
     for _ in range(steps):
         pydirectinput.moveRel(xOffset=int(step_x * sensitivity), yOffset=int(step_y * sensitivity), relative=True,
                               disable_mouse_acceleration=True)
-        # print("pydirection pos", pyautogui.position())
         time.sleep(0.1)
 
 
 is_paused = False
+is_alt = False
 
 
 def on_press(key):
@@ -89,13 +88,14 @@ def on_press(key):
     if key == Key.f2:
         is_paused = not is_paused
         print(f'Loop is {"paused" if is_paused else "resumed"}')
+        # print(f'Alt key is {"released" if is_alt else "not released"}')
         if is_alt:
-            is_alt = False
-            time.sleep(0.4)
+            keyboard = Controller()
             keyboard.press(Key.alt_l)
             keyboard.release(Key.alt_l)
             is_alt = False
             time.sleep(0.1)
+
 
 def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=0.0, delay_t=5):
     wait_time = delay_t
@@ -103,7 +103,7 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
     last_found_time = time.time()  # current time
     is_moving = False
     active = True
-    is_alt = False
+    global is_alt
 
     keyboard = Controller()
     with Listener(on_press=on_press) as keyboard_listener:
@@ -115,8 +115,7 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
                     continue
                 search_time = search_t if active else delay_t
                 elapsed_time = 1 if active else time.time() - start_time
-                confidence = 0.4 if not active and elapsed_time < 8 else 0.5
-
+                confidence = 0.4 if not active and elapsed_time > 8 else 0.5
                 button_location = pyautogui.locateCenterOnScreen(waypoint_image, confidence=confidence, grayscale=True,
                                                                  region=(0, 0, 650, 459))
                 if button_location is not None:
@@ -167,14 +166,8 @@ def move_to_tracked_waypoint(waypoint_image, crosshair_x, crosshair_y, search_t=
                     keyboard.release('w')
                     is_moving = False
                     time.sleep(0.1)
-                    # if is_alt:
-                    #     time.sleep(0.4)
-                    #     keyboard.press(Key.alt_l)
-                    #     keyboard.release(Key.alt_l)
-                    #     is_alt = False
-                    #     time.sleep(0.5)
 
-                elif active:
+                if active:
                     if time.time() - last_found_time >= wait_time:
                         active = False
                     continue
@@ -192,5 +185,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
