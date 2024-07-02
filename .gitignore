@@ -1,8 +1,15 @@
-**.idea
 !.gitignore
 
 !*/
 !README.md
+**.idea
 
 
 
+
+EU/waypoint_tracker/images/
+EU/waypoint_tracker/build
+EU/waypoint_tracker/dist
+EU/waypoint_tracker/main.spec
+/EU/waypoint_tracker/__pycache__
+*.spec
