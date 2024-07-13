@@ -65,7 +65,7 @@ def face_to_waypoint(new_x, new_y, max_y_move=150, steps=12, sensitivity=12):
     x_diff = new_x - current_x
     y_diff = new_y - current_y
     step_x = x_diff / steps
-    step_y = min(abs(y_diff) / steps, max_y_move / steps)  # Limit y-offset to max_y_move
+    step_y = min(y_diff / steps, max_y_move / steps)  # Limit y-offset to max_y_move
 
     for _ in range(steps):
         pydirectinput.moveRel(xOffset=int(step_x * sensitivity), yOffset=int(step_y * sensitivity), relative=True,
