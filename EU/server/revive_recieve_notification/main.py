@@ -1,9 +1,13 @@
 import time
 import os
+from dotenv import load_dotenv
+
 import pyautogui
 
+load_dotenv()  # Load variables from .env file
+
 # Host PC settings
-shared_folder = "C:\\_Home\\Nick\\Entertainment\\main client"
+shared_folder = os.getenv("SHARED_FOLDER")
 notification_file = os.path.join(shared_folder, "notification.txt")
 
 while True:

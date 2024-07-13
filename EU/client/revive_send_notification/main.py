@@ -14,7 +14,7 @@ def send_notification():
 def find_revive_button(image):
     while True:
         try:
-            button_location = pyautogui.locateCenterOnScreen(image, confidence=0.5, grayscale=True)
+            button_location = pyautogui.locateCenterOnScreen(image, confidence=0.8, grayscale=False)
             if button_location is not None:
                 send_notification()
                 time.sleep(10)
