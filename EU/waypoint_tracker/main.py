@@ -60,12 +60,12 @@ def set_window_focus(pid):
     win32gui.EnumWindows(enum_windows_callback, None)
 
 
-def face_to_waypoint(new_x, new_y, steps=12, sensitivity=12):
+def face_to_waypoint(new_x, new_y, max_y_move=150, steps=12, sensitivity=12):
     current_x, current_y = pyautogui.position()
     x_diff = new_x - current_x
     y_diff = new_y - current_y
     step_x = x_diff / steps
-    step_y = y_diff / steps
+    step_y = min(abs(y_diff) / steps, max_y_move / steps)  # Limit y-offset to max_y_move
 
     for _ in range(steps):
         pydirectinput.moveRel(xOffset=int(step_x * sensitivity), yOffset=int(step_y * sensitivity), relative=True,
