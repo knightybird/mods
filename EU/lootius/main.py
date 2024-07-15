@@ -49,14 +49,13 @@ def hourly_task():
     """
     Execute the hourly task with a random delay.
     """
+    login_and_navigate()
+
     print("start hourly task")
     delay = random.randint(3660, 3672)
     print(f"Waiting for {countdown(delay)} seconds before executing the task...")
     # time.sleep(delay)
-
     countdown(3600)  # Countdown for 1 hour (3600 seconds)
-
-    login_and_navigate()
 
 
 if __name__ == '__main__':
