@@ -60,8 +60,6 @@ def hourly_task():
 
 if __name__ == '__main__':
     print("running")
-    login_and_navigate()
-    # countdown(10)  # Test the countdown function with a 10-second countdown
 
     while True:
         hourly_task()
