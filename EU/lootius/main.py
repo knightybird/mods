@@ -9,7 +9,7 @@ werkzeug.cached_property = werkzeug.utils.cached_property  # fix, must be above 
 
 from robobrowser import RoboBrowser
 
-load_dotenv()
+load_dotenv(dotenv_path=".env")
 
 
 def login_and_navigate():
@@ -19,15 +19,13 @@ def login_and_navigate():
     print("login_and_navigate")
     browser = RoboBrowser(history=True)
     browser.open('https://www.lootius.io/')
-
     form = browser.get_form(action='/User/Login')
-    form['user'].value = os.getenv("USERNAME")
-    form['pass'].value = os.getenv("PASSWORD")
+    form['user'].value = os.getenv("USER")
+    form['pass'].value = os.getenv("PASS")
     browser.submit_form(form)
-
     browser.open('https://www.lootius.io/CrateHunt')
-
-    print("Login successful and navigated to CrateHunt page.")
+    # if browser = "url=https://www.lootius.io/NotLoggedIn":
+    #     print("Login successful and navigated to CrateHunt page.")
 
 
 def countdown(seconds):
@@ -54,8 +52,6 @@ def hourly_task():
     print("start hourly task")
     delay = random.randint(3660, 3672)
     print(f"Waiting for {countdown(delay)} seconds before executing the task...")
-    # time.sleep(delay)
-    countdown(3600)  # Countdown for 1 hour (3600 seconds)
 
 
 if __name__ == '__main__':
