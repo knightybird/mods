@@ -5,7 +5,7 @@
 **.idea
 
 
-
+.env
 
 EU/waypoint_tracker/images/
 EU/waypoint_tracker/build
