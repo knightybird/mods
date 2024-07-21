@@ -56,6 +56,10 @@ def hourly_task():
 
 if __name__ == '__main__':
     print("running")
-
+    count = 0
     while True:
-        hourly_task()
+        count += 1
+        login_and_navigate()
+        print("start hourly task ", count)
+        delay = random.randint(3660, 3672)
+        print(f"Waiting for {countdown(delay)} seconds before executing the task...")
