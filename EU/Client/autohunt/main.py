@@ -41,7 +41,7 @@ def auto_hunt():
                     global user_pressed
                     user_pressed = False
                     while not is_paused_F and not user_pressed:
-                        time.sleep(1)
+                        time.sleep(0.25)
                         with keyboard_controller.pressed(Key.shift):
                             keyboard.press('f')
                             keyboard.release('f')
