@@ -49,9 +49,11 @@ app.post('/api', (req, res) => {
 });
 
 /* Create Update Delete */
+const uuid = require('uuid');
+
 app.post('/api/add-card', (req, res) => {
-    const newCardId = req.body.id;
-    const newCardData = { id: newCardId, startTime: null };
+    const newCardData = { id: uuid.v4(), name: req.body.name, startTime: null };
+
     fs.readFile('data.json', (err, data) => {
         if (err) {
             console.error(err);
