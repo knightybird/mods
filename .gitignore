@@ -3,6 +3,7 @@
 !*/
 !README.md
 **.idea
+**node_modules/
 __pycache__
 
 .env
@@ -13,4 +14,5 @@ EU/waypoint_tracker/dist
 EU/waypoint_tracker/main.spec
 
 *.spec
+
 
