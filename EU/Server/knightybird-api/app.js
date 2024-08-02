@@ -3,6 +3,7 @@ const app = express();
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const uuid = require('uuid');
 
 app.use(cors({
     origin: '*',
@@ -51,11 +52,14 @@ app.post('/api', (req, res) => {
     });
 });
 
-/* Create Update Delete */
-const uuid = require('uuid');
-
 app.post('/api/add-card', (req, res) => {
-    const newCardData = {id: uuid.v4(), name: req.body.name, startTime: null, is_hunt_ready: false};
+    const newCardData = {
+        id: uuid.v4(),
+        name: req.body.name,
+        startTime: null,
+        is_hunt_ready: false,
+        order: req.body.order
+    };
 
     fs.readFile('data.json', (err, data) => {
         if (err) {
@@ -105,6 +109,7 @@ app.post('/api/remove-card', (req, res) => {
 app.post('/api/edit-card', (req, res) => {
     const cardIdToEdit = req.body.id;
     const newCardName = req.body.name;
+    const newCardOrder = req.body.order;
     fs.readFile('data.json', (err, data) => {
         if (err) {
             console.error(err);
@@ -114,6 +119,7 @@ app.post('/api/edit-card', (req, res) => {
             const cardIndexToEdit = jsonData.items.findIndex(item => item.id === cardIdToEdit);
             if (cardIndexToEdit !== -1) {
                 jsonData.items[cardIndexToEdit].name = newCardName;
+                jsonData.items[cardIndexToEdit].order = newCardOrder;
                 fs.writeFile('data.json', JSON.stringify(jsonData), (err) => {
                     if (err) {
                         console.error(err);
@@ -125,6 +131,30 @@ app.post('/api/edit-card', (req, res) => {
             } else {
                 res.status(404).send({message: 'Card not found'});
             }
+        }
+    });
+});
+
+app.post('/api/update-order', (req, res) => {
+    const updatedOrder = req.body;
+    fs.readFile('data.json', (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send({message: 'Error reading data'});
+        } else {
+            const jsonData = JSON.parse(data);
+            jsonData.items.sort((a, b) => updatedOrder.indexOf(a.id) - updatedOrder.indexOf(b.id));
+            jsonData.items.forEach((item, index) => {
+                item.order = index + 1;
+            });
+            fs.writeFile('data.json', JSON.stringify(jsonData), (err) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send({message: 'Error writing data'});
+                } else {
+                    res.send({message: 'Order updated successfully'});
+                }
+            });
         }
     });
 });
