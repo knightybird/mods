@@ -3,7 +3,8 @@
     {
       "id": "1",
       "name": "A1",
-      "startTime": null
+      "startTime": null,
+      "is_hunt_ready": false
     }
   ]
 }
