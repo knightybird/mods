@@ -54,20 +54,21 @@ app.post('/api', (req, res) => {
 });
 
 app.post('/api/add-card', (req, res) => {
-    const newCardData = {
-        id: uuid.v4(),
-        name: req.body.name,
-        startTime: null,
-        is_hunt_ready: false,
-        order: req.body.order
-    };
-
     fs.readFile('data.json', (err, data) => {
         if (err) {
             console.error(err);
             res.status(500).send({message: 'Error reading data'});
         } else {
             const jsonData = JSON.parse(data);
+            const lastRow = Math.max(...jsonData.items.filter(item => item.col === 0).map(item => item.row));
+            const newCardData = {
+                id: uuid.v4(),
+                name: req.body.name,
+                startTime: null,
+                is_hunt_ready: false,
+                col: req.body.col,
+                row: lastRow + 1,
+            };
             jsonData.items.push(newCardData);
             fs.writeFile('data.json', JSON.stringify(jsonData), (err) => {
                 if (err) {
