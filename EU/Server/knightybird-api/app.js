@@ -33,10 +33,11 @@ app.post('/api', (req, res) => {
             const jsonData = JSON.parse(data);
             const itemIndex = jsonData.items.findIndex(item => item.id === req.body.id);
             if (itemIndex !== -1) {
-                jsonData.items[itemIndex] = {...jsonData.items[itemIndex], ...req.body};
-                if (req.body.is_hunt_ready !== undefined) {
-                    jsonData.items[itemIndex].is_hunt_ready = req.body.is_hunt_ready;
-                }
+                // jsonData.items[itemIndex] = {...jsonData.items[itemIndex], ...req.body};
+                // if (req.body.is_hunt_ready !== undefined) {
+                //     jsonData.items[itemIndex].is_hunt_ready = req.body.is_hunt_ready;
+                // }
+                Object.assign(jsonData.items[itemIndex], req.body); // accept partial updates without overwriting the entire item data
             } else {
                 jsonData.items.push(req.body);
             }
@@ -143,9 +144,12 @@ app.post('/api/update-order', (req, res) => {
             res.status(500).send({message: 'Error reading data'});
         } else {
             const jsonData = JSON.parse(data);
-            jsonData.items.sort((a, b) => updatedOrder.indexOf(a.id) - updatedOrder.indexOf(b.id));
-            jsonData.items.forEach((item, index) => {
-                item.order = index + 1;
+            updatedOrder.forEach((item) => {
+                const existingItem = jsonData.items.find((i) => i.id === item.id);
+                if (existingItem) {
+                    existingItem.col = item.col;
+                    existingItem.row = item.row;
+                }
             });
             fs.writeFile('data.json', JSON.stringify(jsonData), (err) => {
                 if (err) {
@@ -159,6 +163,7 @@ app.post('/api/update-order', (req, res) => {
     });
 });
 
+//...
 app.listen(8000, () => {
     console.log('Server listening on port 8000');
 });
